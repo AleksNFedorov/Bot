@@ -12,8 +12,8 @@
         </group>
     -->
     <task id="task 1" executor="executor 1">
-        <run>10</run>
-        <deadline>3</deadline>
+        <run>2</run>
+        <deadline>1</deadline>
         <executorConfig>
             <property key="key">value</property>
         </executorConfig>

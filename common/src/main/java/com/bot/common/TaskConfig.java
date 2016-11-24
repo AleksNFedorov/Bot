@@ -1,5 +1,9 @@
 package com.bot.common;
 
+import net.sf.oval.constraint.Min;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.guard.Guarded;
+
 import java.util.Map;
 
 /**
@@ -10,17 +14,22 @@ import java.util.Map;
  * <p>
  * To make task as on time run task schedule interval must be eqal to {@link #ONE_TIME_TASK}
  */
+@Guarded
 public class TaskConfig {
 
     public static final long ONE_TIME_TASK = -1;
 
+    @NotEmpty
     protected String taskName;
 
+    @NotEmpty
     protected String executorId;
 
+    @Min(1)
     protected long runInterval;
 
-    protected long deadline;
+    @Min(1)
+    protected long deadline = 30;
 
     protected Map<String, String> config;
 

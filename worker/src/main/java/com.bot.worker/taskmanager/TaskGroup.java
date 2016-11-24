@@ -16,7 +16,9 @@ import static java.util.stream.Collectors.toList;
 class TaskGroup implements ITaskGroup {
 
     private final String groupName;
+
     private Map<String, TaskContext> tasks = new HashMap<>();
+
 
     TaskGroup(String groupName) {
         this.groupName = groupName;

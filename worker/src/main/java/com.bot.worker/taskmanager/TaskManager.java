@@ -15,10 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by Aleks on 11/19/16.
@@ -35,11 +37,11 @@ public class TaskManager extends EventBusComponent {
 
     @Inject
     public TaskManager(ScheduledExecutorService executorService,
-                       Map<String, ITaskExecutor> executors,
+                       List<ITaskExecutor> executors,
                        ITaskResultProcessor resultProcessor
     ) {
         this.executorService = executorService;
-        this.executors = executors;
+        this.executors = executors.stream().collect(Collectors.toMap(ITaskExecutor::getId, x -> x));
         this.resultProcessor = resultProcessor;
     }
 
@@ -51,7 +53,8 @@ public class TaskManager extends EventBusComponent {
         long deadline = taskConfig.getDeadline();
         final ITaskExecutor executor = executors.get(newConfigEvent.getExecutorId());
 
-        ScheduledFuture<?> taskFuture = executorService.schedule(() -> {
+        ScheduledFuture<?> taskFuture = executorService.scheduleWithFixedDelay(() -> {
+            logger.info("Executing tasks ...");
             TimeLimiter limiter = new SimpleTimeLimiter(executorService);
             TaskExecutionComplete.Builder completeEvent = new TaskExecutionComplete.Builder()
                     .setGroupName(taskGroup)
@@ -66,7 +69,7 @@ public class TaskManager extends EventBusComponent {
                 result = new TaskResult(TaskResult.Status.DeadlineExceed, "Deadline exceed");
             }
             post(completeEvent.setTaskResult(result).build());
-        }, scheduleInterval, TimeUnit.SECONDS);
+        }, 0, scheduleInterval, TimeUnit.SECONDS);
 
         addTaskToGroup(taskGroup, taskConfig, taskFuture);
     }

@@ -2,27 +2,26 @@ package com.bot.worker;
 
 import com.bot.worker.common.events.ExceptionEvent;
 import com.google.common.eventbus.EventBus;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.guard.Guarded;
 
 import javax.inject.Inject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Aleks on 11/14/16.
  */
+@Guarded
 public abstract class EventBusComponent {
 
     private EventBus eventBus;
 
     public abstract String getComponentName();
 
-    protected void post(Object event) {
-        checkNotNull(event, "Event must not be null");
+    protected void post(@NotNull Object event) {
         eventBus.post(event);
     }
 
-    protected void postException(Throwable exception) {
-        checkNotNull(exception, "Exception must be specified");
+    protected void postException(@NotNull Throwable exception) {
 
         eventBus.post(new ExceptionEvent.Builder()
                 .setComponentName(getComponentName())

@@ -15,9 +15,6 @@ public class TaskResultLogger implements ITaskResultProcessor {
 
     @Override
     public void processResult(TaskResult result, ITaskGroup group) {
-
         logger.info("Result processed [{}]", result);
-
-
     }
 }
