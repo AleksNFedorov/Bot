@@ -1,0 +1,21 @@
+<config>
+    <!--
+        <group id="group1">
+            <task id="task 1" executor="executor 1">
+                <run>10</run>
+                <deadline>3</deadline>
+            </task>
+            <task id="task 2" executor="executor 1">
+                <run>10</run>
+                <deadline>3</deadline>
+            </task>
+        </group>
+    -->
+    <task id="task 1" executor="executor 1">
+        <run>10</run>
+        <deadline>3</deadline>
+        <executorConfig>
+            <property key="key">value</property>
+        </executorConfig>
+    </task>
+</config>
