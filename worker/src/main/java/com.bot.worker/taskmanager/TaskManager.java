@@ -1,9 +1,9 @@
 package com.bot.worker.taskmanager;
 
 import com.bot.common.ITaskExecutor;
+import com.bot.common.ITaskResultProcessor;
 import com.bot.common.TaskConfig;
 import com.bot.common.TaskResult;
-import com.bot.common.TaskResultProcessor;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.events.TaskConfigLoaded;
 import com.bot.worker.common.events.TaskExecutionComplete;
@@ -31,16 +31,16 @@ public class TaskManager extends EventBusComponent {
 
     private final Map<String, TaskGroup> tasks = new HashMap<>();
     private final Map<String, ITaskExecutor> executors;
-    private final failAlerter
+    private final ITaskResultProcessor resultProcessor;
 
     @Inject
     public TaskManager(ScheduledExecutorService executorService,
                        Map<String, ITaskExecutor> executors,
-                       TaskResultProcessor failAlerter
+                       ITaskResultProcessor resultProcessor
     ) {
         this.executorService = executorService;
         this.executors = executors;
-        this.failAlerter = failAlerter;
+        this.resultProcessor = resultProcessor;
     }
 
     @Subscribe
@@ -71,8 +71,9 @@ public class TaskManager extends EventBusComponent {
         addTaskToGroup(taskGroup, taskConfig, taskFuture);
     }
 
-    private synchronized void addTaskToGroup(String groupName, TaskConfig config, ScheduledFuture future) {
-        TaskGroup group = tasks.putIfAbsent(groupName, new TaskGroup(groupName));
+    private void addTaskToGroup(String groupName, TaskConfig config, ScheduledFuture future) {
+        tasks.putIfAbsent(groupName, new TaskGroup(groupName));
+        TaskGroup group = tasks.get(groupName);
         group.addTask(new TaskContext(config, future));
     }
 
@@ -82,9 +83,7 @@ public class TaskManager extends EventBusComponent {
         TaskGroup taskGroup = tasks.get(completeEvent.getGroupName());
         taskGroup.addTaskResult(completeEvent.getTaskName(), result);
 
-        if (failAlerter.isTaskFailed(result)) {
-            failAlerter.processResult(result, taskGroup);
-        }
+        resultProcessor.processResult(result, taskGroup);
     }
 
     @Override

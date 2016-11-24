@@ -19,15 +19,15 @@ class TaskContext {
         this.future = future;
     }
 
-    public String getTaskName() {
+    String getTaskName() {
         return config.getTaskName();
     }
 
-    public TaskResult getLastTaskResult() {
+    TaskResult getLastTaskResult() {
         return lastTaskResult;
     }
 
-    public void setLastTaskResult(TaskResult lastTaskResult) {
+    void setLastTaskResult(TaskResult lastTaskResult) {
         this.lastTaskResult = lastTaskResult;
     }
 }
