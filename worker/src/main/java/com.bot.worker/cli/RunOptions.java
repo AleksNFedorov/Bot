@@ -1,5 +1,7 @@
 package com.bot.worker.cli;
 
+import com.bot.worker.common.Command;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /**
@@ -8,13 +10,48 @@ import org.apache.commons.cli.Options;
 class RunOptions extends Options {
 
     RunOptions() {
-/*
-        addOption(Option.builder(command.getShortOpt())
+
+        Command command = Command.help;
+        addOption(Option
+                .builder(command.getShortOpt())
                 .longOpt(command.name())
-                .argName("task_id")
                 .desc(command.getDescription())
-                .required()
                 .build());
-*/
+
+        command = Command.hold;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
+
+        command = Command.cancel;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
+
+        command = Command.schedule;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
+
+        command = Command.status;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
     }
 }

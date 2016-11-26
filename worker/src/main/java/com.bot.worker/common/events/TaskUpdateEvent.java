@@ -1,6 +1,6 @@
 package com.bot.worker.common.events;
 
-import com.bot.worker.common.TaskCommand;
+import com.bot.worker.common.Command;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
@@ -9,7 +9,7 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskUpdateEvent {
 
-    TaskCommand getCommand();
+    Command getCommand();
 
     String getTaskName();
 

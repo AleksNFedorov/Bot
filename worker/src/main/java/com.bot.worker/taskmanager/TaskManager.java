@@ -92,12 +92,11 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
-    private void onTaskUpdateEvent(TaskUpdateEvent event) {
+    private synchronized void onTaskUpdateEvent(TaskUpdateEvent event) {
         post(new TaskUpdateResultEvent.Builder()
                 .setTaskName(event.getTaskName())
-//                .setType(event.getCommand())
                 .setCommand(event.getCommand())
-                .setResultMessage("Processed")
+                .setResultMessage("Processed" + event.getCommand() + event.getTaskName())
                 .build());
     }
 
