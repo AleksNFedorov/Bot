@@ -1,7 +1,5 @@
 package com.bot.common;
 
-import net.sf.oval.constraint.NotEmpty;
-
 /**
  * General interface for task Executors.
  * Every instance must be stateless to be ready accept concurrent execution call.
@@ -16,7 +14,6 @@ public interface ITaskExecutor<C extends TaskConfig> {
      *
      * @return string executor id;
      */
-    @NotEmpty
     String getId();
 
     /**

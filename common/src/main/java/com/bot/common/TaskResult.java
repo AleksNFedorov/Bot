@@ -1,26 +1,26 @@
 package com.bot.common;
 
-import net.sf.oval.constraint.NotEmpty;
-import net.sf.oval.constraint.NotNull;
-import net.sf.oval.guard.Guarded;
+
+import com.google.common.base.Optional;
 
 /**
  * Task execution result.
  */
-@Guarded
 public class TaskResult {
 
-    @NotNull
     private final Status status;
 
-    @NotEmpty
-    private final String message;
+    private final Optional<String> message;
 
     private final long timestamp;
 
+    public TaskResult(Status status) {
+        this(status, null);
+    }
+
     public TaskResult(Status status, String message) {
         this.status = status;
-        this.message = message;
+        this.message = message == null ? Optional.<String>absent() : Optional.of(message);
         this.timestamp = System.currentTimeMillis();
     }
 
@@ -32,7 +32,7 @@ public class TaskResult {
         return status;
     }
 
-    public String getMessage() {
+    public Optional<String> getMessage() {
         return message;
     }
 

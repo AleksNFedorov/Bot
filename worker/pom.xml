@@ -64,5 +64,12 @@
             <artifactId>freebuilder</artifactId>
             <version>1.10.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>net.sf.oval</groupId>
+            <artifactId>oval</artifactId>
+            <version>1.86</version>
+        </dependency>
+
     </dependencies>
 </project>

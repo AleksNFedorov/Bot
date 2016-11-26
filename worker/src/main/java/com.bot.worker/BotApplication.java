@@ -1,5 +1,6 @@
 package com.bot.worker;
 
+import com.bot.worker.cli.CliProcessor;
 import com.bot.worker.common.events.InitEvent;
 import com.bot.worker.config.ConfigLoader;
 import com.bot.worker.taskmanager.TaskManager;
@@ -20,10 +21,13 @@ public class BotApplication extends EventBusComponent {
 
     private final TaskManager taskManager;
 
+    private final CliProcessor cliProcessor;
+
     @Inject
-    public BotApplication(ConfigLoader configLoader, TaskManager taskManager) {
+    public BotApplication(ConfigLoader configLoader, TaskManager taskManager, CliProcessor cliProcessor) {
         this.configLoader = configLoader;
         this.taskManager = taskManager;
+        this.cliProcessor = cliProcessor;
     }
 
     public void start() {

@@ -1,6 +1,6 @@
 package com.bot.worker;
 
-import com.bot.worker.cli.BotOptions;
+import com.bot.worker.cli.BootOptions;
 import com.bot.worker.cli.CliModule;
 import com.google.inject.Guice;
 import org.apache.commons.cli.CommandLine;
@@ -20,7 +20,7 @@ public class BotStarter {
     public static void main(String... args) {
         logger.info("Starting application with arguments " + Arrays.toString(args));
         try {
-            CommandLine commandLine = new DefaultParser().parse(new BotOptions(), args);
+            CommandLine commandLine = new DefaultParser().parse(new BootOptions(), args);
             Guice.createInjector(
                     new CliModule(commandLine),
                     new BotModule())

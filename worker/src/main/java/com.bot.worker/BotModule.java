@@ -51,4 +51,5 @@ class BotModule extends AbstractModule {
     EventBus provideEventBus(Executor executor) {
         return new EventBus();
     }
+
 }

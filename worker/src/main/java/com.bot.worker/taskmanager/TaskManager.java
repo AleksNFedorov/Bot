@@ -7,6 +7,9 @@ import com.bot.common.TaskResult;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.events.TaskConfigLoaded;
 import com.bot.worker.common.events.TaskExecutionComplete;
+import com.bot.worker.common.events.TaskUpdateEvent;
+import com.bot.worker.common.events.TaskUpdateResultEvent;
+import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
@@ -15,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -37,7 +39,7 @@ public class TaskManager extends EventBusComponent {
 
     @Inject
     public TaskManager(ScheduledExecutorService executorService,
-                       List<ITaskExecutor> executors,
+                       ImmutableList<ITaskExecutor> executors,
                        ITaskResultProcessor resultProcessor
     ) {
         this.executorService = executorService;
@@ -46,7 +48,7 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
-    private void onNewTaskConfig(TaskConfigLoaded newConfigEvent) {
+    private synchronized void onNewTaskConfig(TaskConfigLoaded newConfigEvent) {
         String taskGroup = newConfigEvent.getGroupName();
         final TaskConfig taskConfig = newConfigEvent.getTaskConfig();
         long scheduleInterval = taskConfig.getRunInterval();
@@ -81,12 +83,22 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
-    private void onTaskExecutionComplete(TaskExecutionComplete completeEvent) {
+    private synchronized void onTaskExecutionComplete(TaskExecutionComplete completeEvent) {
         TaskResult result = completeEvent.getTaskResult();
         TaskGroup taskGroup = tasks.get(completeEvent.getGroupName());
         taskGroup.addTaskResult(completeEvent.getTaskName(), result);
 
         resultProcessor.processResult(result, taskGroup);
+    }
+
+    @Subscribe
+    private void onTaskUpdateEvent(TaskUpdateEvent event) {
+        post(new TaskUpdateResultEvent.Builder()
+                .setTaskName(event.getTaskName())
+//                .setType(event.getCommand())
+                .setCommand(event.getCommand())
+                .setResultMessage("Processed")
+                .build());
     }
 
     @Override

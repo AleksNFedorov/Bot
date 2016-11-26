@@ -19,12 +19,12 @@ public class CliModule extends AbstractModule {
 
     protected void configure() {
         bind(Integer.class).annotatedWith(Annotations.ThreadsCount.class).toInstance(getThreadsCount());
-        bind(String.class).annotatedWith(Annotations.TaskConfigFile.class).toInstance(commandLine.getOptionValue(BotOptions.TASK_CONFIG_FILE_PATH));
+        bind(String.class).annotatedWith(Annotations.TaskConfigFile.class).toInstance(commandLine.getOptionValue(BootOptions.TASK_CONFIG_FILE_PATH));
     }
 
     private int getThreadsCount() {
-        if (commandLine.hasOption(BotOptions.THREADS_COUNT)) {
-            return Integer.parseInt(commandLine.getOptionValue(BotOptions.THREADS_COUNT));
+        if (commandLine.hasOption(BootOptions.THREADS_COUNT)) {
+            return Integer.parseInt(commandLine.getOptionValue(BootOptions.THREADS_COUNT));
         }
         return THREADS_COUNT_DEFAULT;
     }
