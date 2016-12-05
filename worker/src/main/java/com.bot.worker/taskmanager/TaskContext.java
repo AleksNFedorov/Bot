@@ -35,8 +35,8 @@ class TaskContext {
         if (future.isCancelled()) {
             return "Cancelled";
         } else if (future.isDone()) {
-            return "Scheduled";
+            return "Finished";
         }
-        return "Created";
+        return "Scheduled";
     }
 }
