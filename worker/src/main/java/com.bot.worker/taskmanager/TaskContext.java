@@ -30,4 +30,13 @@ class TaskContext {
     void setLastTaskResult(TaskResult lastTaskResult) {
         this.lastTaskResult = lastTaskResult;
     }
+
+    String getStatus() {
+        if (future.isCancelled()) {
+            return "Cancelled";
+        } else if (future.isDone()) {
+            return "Scheduled";
+        }
+        return "Created";
+    }
 }

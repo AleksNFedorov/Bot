@@ -19,7 +19,6 @@ class TaskGroup implements ITaskGroup {
 
     private Map<String, TaskContext> tasks = new HashMap<>();
 
-
     TaskGroup(String groupName) {
         this.groupName = groupName;
     }

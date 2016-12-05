@@ -2,6 +2,8 @@ package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Command;
+import com.bot.worker.common.events.GetStatusRequest;
+import com.bot.worker.common.events.GetStatusResponse;
 import com.bot.worker.common.events.TaskUpdateEvent;
 import com.bot.worker.common.events.TaskUpdateResultEvent;
 import com.google.common.base.Strings;
@@ -65,22 +67,36 @@ public class CliProcessor extends EventBusComponent {
     private void processOption(Command command, CommandLine commandLine) {
         logger.info("Processing new cli command [%s]", command.name());
 
-        if (command.equals(Command.help)) {
-            displayHelpMessage();
-            return;
+        switch (command) {
+            case help:
+                displayHelpMessage();
+                return;
+            case status:
+                String taskId = commandLine.getOptionValue(command.name());
+                if ("all".equals(taskId.toLowerCase())) {
+                    taskId = null;
+                }
+                post(new GetStatusRequest.Builder().setNullableTaskName(taskId).build());
+                return;
+            default:
+                String optionValue = commandLine.getOptionValue(command.name());
+                post(new TaskUpdateEvent.Builder()
+                        .setCommand(command)
+                        .setTaskName(optionValue)
+                        .build());
         }
-
-        String optionValue = commandLine.getOptionValue(command.name());
-        TaskUpdateEvent event = new TaskUpdateEvent.Builder()
-                .setCommand(command)
-                .setTaskName(optionValue)
-                .build();
-        post(event);
     }
 
     private void displayHelpMessage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(" ", "Available commands", new RunOptions(), "", false);
+    }
+
+
+    @Subscribe
+    public void onStatusResponse(GetStatusResponse response) {
+        System.out.println(String.format("Total tasks found : %d", response.getTaskInfos().size()));
+        response.getTaskInfos().stream().forEach(System.out::println);
     }
 
     @Subscribe
