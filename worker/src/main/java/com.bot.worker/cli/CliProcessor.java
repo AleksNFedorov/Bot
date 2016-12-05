@@ -6,6 +6,7 @@ import com.bot.worker.common.events.GetStatusRequest;
 import com.bot.worker.common.events.GetStatusResponse;
 import com.bot.worker.common.events.TaskUpdateEvent;
 import com.bot.worker.common.events.TaskUpdateResultEvent;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
 import org.apache.commons.cli.CommandLine;
@@ -96,7 +97,10 @@ public class CliProcessor extends EventBusComponent {
     @Subscribe
     public void onStatusResponse(GetStatusResponse response) {
         System.out.println(String.format("Total tasks found : %d", response.getTaskInfos().size()));
-        response.getTaskInfos().stream().forEach(System.out::println);
+        response.getTaskInfos().forEach((info) ->
+                System.out.println(MoreObjects.toStringHelper("")
+                        .addValue(info.getTaskName())
+                        .addValue(info.getStatus()).toString()));
     }
 
     @Subscribe

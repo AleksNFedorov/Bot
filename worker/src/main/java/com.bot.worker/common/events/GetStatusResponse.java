@@ -21,10 +21,8 @@ public interface GetStatusResponse {
 
         class Builder extends GetStatusResponse_TaskInfo_Builder {
         }
-
     }
 
     class Builder extends GetStatusResponse_Builder {
     }
-
 }
