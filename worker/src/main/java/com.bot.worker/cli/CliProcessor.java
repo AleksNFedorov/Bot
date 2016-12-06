@@ -2,10 +2,7 @@ package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Command;
-import com.bot.worker.common.events.GetStatusRequest;
-import com.bot.worker.common.events.GetStatusResponse;
-import com.bot.worker.common.events.TaskUpdateEvent;
-import com.bot.worker.common.events.TaskUpdateResultEvent;
+import com.bot.worker.common.events.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
@@ -67,17 +64,19 @@ public class CliProcessor extends EventBusComponent {
 
     private void processOption(Command command, CommandLine commandLine) {
         logger.info("Processing new cli command [%s]", command.name());
+        System.out.println(command.name());
 
         switch (command) {
             case help:
                 displayHelpMessage();
                 return;
             case status:
-                String taskId = commandLine.getOptionValue(command.name());
-                if ("all".equals(taskId.toLowerCase())) {
-                    taskId = null;
-                }
+                String taskId = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
                 post(new GetStatusRequest.Builder().setNullableTaskName(taskId).build());
+                return;
+            case cancel:
+                String taskToCancel = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
+                post(new TaskHoldEvent.Builder().setNullableTaskName(taskToCancel).build());
                 return;
             default:
                 String optionValue = commandLine.getOptionValue(command.name());
@@ -88,6 +87,14 @@ public class CliProcessor extends EventBusComponent {
         }
     }
 
+    private String taskOptionValueToParameter(String taskId) {
+        if ("all".equalsIgnoreCase(taskId)) {
+            return null;
+        }
+
+        return taskId.trim();
+    }
+
     private void displayHelpMessage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(" ", "Available commands", new RunOptions(), "", false);
@@ -96,11 +103,13 @@ public class CliProcessor extends EventBusComponent {
 
     @Subscribe
     public void onStatusResponse(GetStatusResponse response) {
-        System.out.println(String.format("Total tasks found : %d", response.getTaskInfos().size()));
+        System.out.println(String.format("Tasks found : %d", response.getTaskInfos().size()));
         response.getTaskInfos().forEach((info) ->
                 System.out.println(MoreObjects.toStringHelper("")
                         .addValue(info.getTaskName())
-                        .addValue(info.getStatus()).toString()));
+                        .addValue(info.getStatus())
+                        .addValue(info.getResultStatus())
+                        .toString()));
     }
 
     @Subscribe

@@ -2,20 +2,28 @@ package com.bot.worker.taskmanager;
 
 import com.bot.common.TaskConfig;
 import com.bot.common.TaskResult;
+import com.bot.worker.common.TaskStatus;
 
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Future;
 
 /**
  * Created by Aleks on 11/20/16.
  */
 class TaskContext {
+
     private final TaskConfig config;
-    private final ScheduledFuture<Void> future;
+
+    private Future<?> future;
 
     private TaskResult lastTaskResult;
 
-    TaskContext(TaskConfig config, ScheduledFuture<Void> future) {
+    private TaskStatus status = TaskStatus.Scheduled;
+
+    TaskContext(TaskConfig config) {
         this.config = config;
+    }
+
+    public void setFuture(Future<?> future) {
         this.future = future;
     }
 
@@ -31,12 +39,20 @@ class TaskContext {
         this.lastTaskResult = lastTaskResult;
     }
 
-    String getStatus() {
-        if (future.isCancelled()) {
-            return "Cancelled";
-        } else if (future.isDone()) {
-            return "Finished";
-        }
-        return "Scheduled";
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    void putOnHold() {
+        future.cancel(true);
+        setStatus(TaskStatus.Hold);
+    }
+
+    public TaskConfig getConfig() {
+        return config;
     }
 }

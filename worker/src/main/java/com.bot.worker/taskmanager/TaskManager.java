@@ -5,7 +5,9 @@ import com.bot.common.ITaskResultProcessor;
 import com.bot.common.TaskConfig;
 import com.bot.common.TaskResult;
 import com.bot.worker.EventBusComponent;
+import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.*;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
@@ -14,12 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -51,18 +52,32 @@ public class TaskManager extends EventBusComponent {
     private synchronized void onNewTaskConfig(TaskConfigLoaded newConfigEvent) {
         String taskGroup = newConfigEvent.getGroupName();
         final TaskConfig taskConfig = newConfigEvent.getTaskConfig();
-        long scheduleInterval = taskConfig.getRunInterval();
-        long deadline = taskConfig.getDeadline();
         final ITaskExecutor executor = executors.get(newConfigEvent.getExecutorId());
 
-        ScheduledFuture<?> taskFuture = executorService.scheduleWithFixedDelay(() -> {
-            logger.info("Executing idToGroup ...");
+        final TaskContext taskContext = addTaskToGroup(taskGroup, taskConfig);
+
+        Runnable runnable = createTaskRunnable(executor, taskGroup, taskContext);
+        Future<?> taskFuture;
+        if (taskConfig.isOneTimeTask()) {
+            taskFuture = executorService.submit(runnable);
+        } else {
+            taskFuture = executorService.scheduleWithFixedDelay(runnable, 0, taskConfig.getRunInterval(), TimeUnit.SECONDS);
+        }
+
+        taskContext.setFuture(taskFuture);
+    }
+
+    private Runnable createTaskRunnable(ITaskExecutor executor, String taskGroup, TaskContext taskContext) {
+
+        final TaskConfig taskConfig = taskContext.getConfig();
+        long deadline = taskConfig.getDeadline();
+
+        return () -> {
+            logger.info("Running {}", taskConfig.getTaskName());
             TimeLimiter limiter = new SimpleTimeLimiter(executorService);
-            TaskExecutionComplete.Builder completeEvent = new TaskExecutionComplete.Builder()
-                    .setGroupName(taskGroup)
-                    .setTaskName(taskConfig.getTaskName());
             TaskResult result;
             try {
+                taskContext.setStatus(TaskStatus.Running);
                 result = limiter.callWithTimeout(() -> {
                             return executor.executeTask(taskConfig);
                         },
@@ -70,18 +85,21 @@ public class TaskManager extends EventBusComponent {
             } catch (Exception e) {
                 result = new TaskResult(TaskResult.Status.DeadlineExceed, "Deadline exceed");
             }
-            post(completeEvent.setTaskResult(result).build());
-        }, 0, scheduleInterval, TimeUnit.SECONDS);
+            post(new TaskExecutionComplete.Builder()
+                    .setGroupName(taskGroup)
+                    .setTaskName(taskConfig.getTaskName())
+                    .setTaskResult(result).build());
+        };
 
-        addTaskToGroup(taskGroup, taskConfig, taskFuture);
     }
 
-    private void addTaskToGroup(String groupName, TaskConfig config, ScheduledFuture future) {
+    private TaskContext addTaskToGroup(String groupName, TaskConfig config) {
         idToGroup.putIfAbsent(groupName, new TaskGroup(groupName));
         TaskGroup group = idToGroup.get(groupName);
-        TaskContext taskContext = new TaskContext(config, future);
+        TaskContext taskContext = new TaskContext(config);
         group.addTask(taskContext);
         idToTask.put(config.getTaskName(), taskContext);
+        return taskContext;
     }
 
     @Subscribe
@@ -89,39 +107,59 @@ public class TaskManager extends EventBusComponent {
         TaskResult result = completeEvent.getTaskResult();
         TaskGroup taskGroup = idToGroup.get(completeEvent.getGroupName());
         taskGroup.addTaskResult(completeEvent.getTaskName(), result);
+        TaskContext context = idToTask.get(completeEvent.getTaskName());
 
+        TaskStatus newStatus = TaskStatus.Unknown;
+        switch (context.getStatus()) {
+            case Running:
+                newStatus = context.getConfig().isOneTimeTask() ? TaskStatus.Finished : TaskStatus.Scheduled;
+                break;
+            case Hold:
+                newStatus = TaskStatus.Hold;
+                break;
+        }
+
+        context.setStatus(newStatus);
         resultProcessor.processResult(result, taskGroup);
     }
 
+
     @Subscribe
-    private synchronized void onTaskUpdateEvent(TaskUpdateEvent event) {
-        post(new TaskUpdateResultEvent.Builder()
-                .setTaskName(event.getTaskName())
-                .setCommand(event.getCommand())
-                .setResultMessage("Processed" + event.getCommand() + event.getTaskName())
-                .build());
+    private synchronized void onTaskHoldEvent(TaskHoldEvent event) {
+        List<TaskContext> tasks = getTasksById(event.getTaskName());
+        tasks.forEach(TaskContext::putOnHold);
+        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
+
     }
+
 
     @Subscribe
     private synchronized void onGetStatusRequest(GetStatusRequest request) {
-        List<TaskContext> tasks = new ArrayList<>();
-        if (request.getTaskName().isPresent()) {
-            TaskContext task = idToTask.get(request.getTaskName().get());
-            if (task != null) {
-                tasks.add(task);
-            }
-        } else {
-            tasks.addAll(idToTask.values());
-        }
+        List<TaskContext> tasks = getTasksById(request.getTaskName());
 
         post(new GetStatusResponse.Builder()
                 .addAllTaskInfos(tasks.stream().map((context) ->
                         new GetStatusResponse.TaskInfo.Builder()
                                 .setTaskName(context.getTaskName())
                                 .setStatus(context.getStatus())
+                                .setResultStatus(context.getLastTaskResult().getStatus())
                                 .build()
                 ).collect(Collectors.toList()))
                 .build());
+    }
+
+    private ImmutableList<TaskContext> getTasksById(Optional<String> taskId) {
+        ImmutableList.Builder<TaskContext> tasks = ImmutableList.builder();
+        if (taskId.isPresent()) {
+            TaskContext task = idToTask.get(taskId.get());
+            if (task != null) {
+                tasks = tasks.add(task);
+            }
+        } else {
+            tasks = tasks.addAll(idToTask.values());
+        }
+
+        return tasks.build();
     }
 
     @Override

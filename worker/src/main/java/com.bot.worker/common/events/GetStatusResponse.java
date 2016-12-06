@@ -1,5 +1,7 @@
 package com.bot.worker.common.events;
 
+import com.bot.common.TaskResult;
+import com.bot.worker.common.TaskStatus;
 import com.google.common.collect.ImmutableList;
 import org.inferred.freebuilder.FreeBuilder;
 
@@ -17,7 +19,9 @@ public interface GetStatusResponse {
 
         String getTaskName();
 
-        String getStatus();
+        TaskStatus getStatus();
+
+        TaskResult.Status getResultStatus();
 
         class Builder extends GetStatusResponse_TaskInfo_Builder {
         }
