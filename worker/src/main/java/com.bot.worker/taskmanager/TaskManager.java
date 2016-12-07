@@ -52,11 +52,14 @@ public class TaskManager extends EventBusComponent {
     private synchronized void onNewTaskConfig(TaskConfigLoaded newConfigEvent) {
         String taskGroup = newConfigEvent.getGroupName();
         final TaskConfig taskConfig = newConfigEvent.getTaskConfig();
-        final ITaskExecutor executor = executors.get(newConfigEvent.getExecutorId());
-
         final TaskContext taskContext = addTaskToGroup(taskGroup, taskConfig);
+        scheduleTask(taskContext);
+    }
 
-        Runnable runnable = createTaskRunnable(executor, taskGroup, taskContext);
+    private void scheduleTask(TaskContext taskContext) {
+        final TaskConfig taskConfig = taskContext.getConfig();
+        final ITaskExecutor executor = executors.get(taskConfig.getExecutorId());
+        Runnable runnable = createTaskRunnable(executor, taskContext.getGroupName(), taskContext);
         Future<?> taskFuture;
         if (taskConfig.isOneTimeTask()) {
             taskFuture = executorService.submit(runnable);
@@ -84,6 +87,7 @@ public class TaskManager extends EventBusComponent {
                         deadline, TimeUnit.SECONDS, true);
             } catch (Exception e) {
                 result = new TaskResult(TaskResult.Status.DeadlineExceed, "Deadline exceed");
+                post(new ExceptionEvent.Builder().setCause(e).setComponentName(this.getComponentName()).build());
             }
             post(new TaskExecutionComplete.Builder()
                     .setGroupName(taskGroup)
@@ -96,7 +100,7 @@ public class TaskManager extends EventBusComponent {
     private TaskContext addTaskToGroup(String groupName, TaskConfig config) {
         idToGroup.putIfAbsent(groupName, new TaskGroup(groupName));
         TaskGroup group = idToGroup.get(groupName);
-        TaskContext taskContext = new TaskContext(config);
+        TaskContext taskContext = new TaskContext(config, groupName);
         group.addTask(taskContext);
         idToTask.put(config.getTaskName(), taskContext);
         return taskContext;
@@ -123,6 +127,12 @@ public class TaskManager extends EventBusComponent {
         resultProcessor.processResult(result, taskGroup);
     }
 
+    @Subscribe
+    private synchronized void onTaskScheduleEvent(TaskScheduleEvent event) {
+        List<TaskContext> tasks = getTasksById(event.getTaskName());
+        tasks.forEach(this::scheduleTask);
+        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
+    }
 
     @Subscribe
     private synchronized void onTaskHoldEvent(TaskHoldEvent event) {
@@ -131,7 +141,6 @@ public class TaskManager extends EventBusComponent {
         onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
 
     }
-
 
     @Subscribe
     private synchronized void onGetStatusRequest(GetStatusRequest request) {

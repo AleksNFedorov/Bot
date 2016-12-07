@@ -78,6 +78,10 @@ public class CliProcessor extends EventBusComponent {
                 String taskToCancel = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
                 post(new TaskHoldEvent.Builder().setNullableTaskName(taskToCancel).build());
                 return;
+            case schedule:
+                String taskToSchedule = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
+                post(new TaskScheduleEvent.Builder().setNullableTaskName(taskToSchedule).build());
+                return;
             default:
                 String optionValue = commandLine.getOptionValue(command.name());
                 post(new TaskUpdateEvent.Builder()

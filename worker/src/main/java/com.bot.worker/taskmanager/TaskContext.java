@@ -13,14 +13,21 @@ class TaskContext {
 
     private final TaskConfig config;
 
+    private final String groupName;
+
     private Future<?> future;
 
     private TaskResult lastTaskResult;
 
     private TaskStatus status = TaskStatus.Scheduled;
 
-    TaskContext(TaskConfig config) {
+    public TaskContext(TaskConfig config, String groupName) {
         this.config = config;
+        this.groupName = groupName;
+    }
+
+    public String getGroupName() {
+        return groupName;
     }
 
     public void setFuture(Future<?> future) {

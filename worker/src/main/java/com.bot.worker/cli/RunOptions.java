@@ -18,15 +18,6 @@ class RunOptions extends Options {
                 .desc(command.getDescription())
                 .build());
 
-        command = Command.hold;
-        addOption(Option
-                .builder(command.getShortOpt())
-                .longOpt(command.name())
-                .desc(command.getDescription())
-                .hasArg()
-                .argName("TASK ID")
-                .build());
-
         command = Command.cancel;
         addOption(Option
                 .builder(command.getShortOpt())

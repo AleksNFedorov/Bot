@@ -4,7 +4,6 @@ package com.bot.worker.common;
  * Created by Aleks on 11/25/16.
  */
 public enum Command {
-    hold("Put task execution on hold, put 'all' to hold all tasks", "h"),
     help("Show this help message", "help"),
     cancel("Try to stop task execution and put on hold", "c"),
     schedule("Schedule task for execution", "s"),
