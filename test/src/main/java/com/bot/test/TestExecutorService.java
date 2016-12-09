@@ -18,7 +18,7 @@ public class TestExecutorService implements ITaskExecutor {
     }
 
     public TaskResult executeTask(TaskConfig config) {
-        logger.info("Executing task ");
+        logger.info("Executing task in " + getId());
         return new TaskResult(TaskResult.Status.Success, "Test execution success");
 
     }

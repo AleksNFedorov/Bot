@@ -38,6 +38,10 @@ class TaskGroup implements ITaskGroup {
                 .collect(collectingAndThen(toList(), ImmutableList::copyOf));
     }
 
+    public void removeTask(TaskContext context) {
+        tasks.remove(context.getTaskName());
+    }
+
     @Override
     public String getName() {
         return groupName;

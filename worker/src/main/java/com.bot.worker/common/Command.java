@@ -5,10 +5,11 @@ package com.bot.worker.common;
  */
 public enum Command {
     help("Show this help message", "help"),
-    cancel("Try to stop task execution and put on hold", "c"),
+    hold("Put task on hold, put 'all' to put on hold all tasks", "hd"),
     schedule("Schedule task for execution", "s"),
-    stop("Stop application", "stop"),
-    status("Show task status, put 'all' to display status for all tasks", "st");
+    status("Show task status, put 'all' to display status for all tasks", "st"),
+    drop("Drop task and remove all results, put 'all' drop all tasks", "dp"),
+    reload("Reload task from config, put 'all' to reload all tasks", "rd");
 
     private String description;
     private String shortOpt;

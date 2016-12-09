@@ -37,6 +37,7 @@ public class TaskResult {
     }
 
     public enum Status {
+        NoStatusYet,
         Success,
         Fail,
         Exception,

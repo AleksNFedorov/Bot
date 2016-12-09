@@ -2,6 +2,7 @@ package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Command;
+import com.bot.worker.common.Constants;
 import com.bot.worker.common.events.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -74,13 +75,21 @@ public class CliProcessor extends EventBusComponent {
                 String taskId = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
                 post(new GetStatusRequest.Builder().setNullableTaskName(taskId).build());
                 return;
-            case cancel:
+            case hold:
                 String taskToCancel = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
                 post(new TaskHoldEvent.Builder().setNullableTaskName(taskToCancel).build());
                 return;
             case schedule:
                 String taskToSchedule = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
                 post(new TaskScheduleEvent.Builder().setNullableTaskName(taskToSchedule).build());
+                return;
+            case reload:
+                String taskToReload = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
+                post(new TaskConfigReloadEvent.Builder().setNullableTaskName(taskToReload).build());
+                return;
+            case drop:
+                String taskToDrop = taskOptionValueToParameter(commandLine.getOptionValue(command.name()));
+                post(new TaskDropEvent.Builder().setNullableTaskName(taskToDrop).build());
                 return;
             default:
                 String optionValue = commandLine.getOptionValue(command.name());
@@ -92,7 +101,7 @@ public class CliProcessor extends EventBusComponent {
     }
 
     private String taskOptionValueToParameter(String taskId) {
-        if ("all".equalsIgnoreCase(taskId)) {
+        if (Constants.ALL.equalsIgnoreCase(taskId)) {
             return null;
         }
 

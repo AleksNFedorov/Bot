@@ -11,7 +11,7 @@
             </task>
         </group>
     -->
-    <task id="task_1" executor="testExecutor">
+    <task id="task_2" executor="testExecutor">
         <run>2</run>
         <deadline>1</deadline>
         <executorConfig>

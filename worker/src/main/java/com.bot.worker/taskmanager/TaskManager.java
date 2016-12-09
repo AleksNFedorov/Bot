@@ -86,7 +86,7 @@ public class TaskManager extends EventBusComponent {
                         },
                         deadline, TimeUnit.SECONDS, true);
             } catch (Exception e) {
-                result = new TaskResult(TaskResult.Status.DeadlineExceed, "Deadline exceed");
+                result = new TaskResult(TaskResult.Status.Exception, e.getLocalizedMessage());
                 post(new ExceptionEvent.Builder().setCause(e).setComponentName(this.getComponentName()).build());
             }
             post(new TaskExecutionComplete.Builder()
@@ -100,9 +100,9 @@ public class TaskManager extends EventBusComponent {
     private TaskContext addTaskToGroup(String groupName, TaskConfig config) {
         idToGroup.putIfAbsent(groupName, new TaskGroup(groupName));
         TaskGroup group = idToGroup.get(groupName);
-        TaskContext taskContext = new TaskContext(config, groupName);
+        idToTask.putIfAbsent(config.getTaskName(), new TaskContext(config, groupName));
+        TaskContext taskContext = idToTask.get(config.getTaskName());
         group.addTask(taskContext);
-        idToTask.put(config.getTaskName(), taskContext);
         return taskContext;
     }
 
@@ -128,16 +128,29 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
+    private synchronized void onTaskDropEvent(TaskDropEvent event) {
+        List<TaskContext> tasks = getTasksById(event.getTaskName());
+        tasks.forEach(context -> {
+            context.putOnHold();
+            idToTask.remove(context.getTaskName());
+            idToGroup.get(context.getGroupName()).removeTask(context);
+        });
+        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
+    }
+
+    @Subscribe
     private synchronized void onTaskScheduleEvent(TaskScheduleEvent event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
-        tasks.forEach(this::scheduleTask);
+        tasks.stream().filter(k -> k.getStatus().equals(TaskStatus.Hold)).forEach(this::scheduleTask);
         onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
     }
 
     @Subscribe
     private synchronized void onTaskHoldEvent(TaskHoldEvent event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
-        tasks.forEach(TaskContext::putOnHold);
+        tasks.stream().filter(k -> (
+                k.getStatus().equals(TaskStatus.Running) ||
+                        k.getStatus().equals(TaskStatus.Scheduled))).forEach(TaskContext::putOnHold);
         onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName(event.getTaskName().orNull()).build());
 
     }

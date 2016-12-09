@@ -14,11 +14,11 @@ public class TestExecutorService2 implements ITaskExecutor {
     private static final Logger logger = LoggerFactory.getLogger(TestExecutorService2.class);
 
     public String getId() {
-        return "TaskExeutorService2";
+        return "executor2";
     }
 
     public TaskResult executeTask(TaskConfig config) {
-        logger.info("Executing task in TaskExecutor 2");
+        logger.info("Executing task in " + getId());
         return new TaskResult(TaskResult.Status.Success, "Test execution success");
     }
 }

@@ -18,7 +18,7 @@ class RunOptions extends Options {
                 .desc(command.getDescription())
                 .build());
 
-        command = Command.cancel;
+        command = Command.hold;
         addOption(Option
                 .builder(command.getShortOpt())
                 .longOpt(command.name())
@@ -37,6 +37,24 @@ class RunOptions extends Options {
                 .build());
 
         command = Command.status;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
+
+        command = Command.reload;
+        addOption(Option
+                .builder(command.getShortOpt())
+                .longOpt(command.name())
+                .desc(command.getDescription())
+                .hasArg()
+                .argName("TASK ID")
+                .build());
+
+        command = Command.drop;
         addOption(Option
                 .builder(command.getShortOpt())
                 .longOpt(command.name())
