@@ -5,6 +5,8 @@ import com.bot.worker.common.TaskStatus;
 import com.google.common.collect.ImmutableList;
 import org.inferred.freebuilder.FreeBuilder;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by Aleks on 12/4/16.
  */
@@ -12,7 +14,7 @@ import org.inferred.freebuilder.FreeBuilder;
 public interface GetStatusResponse {
 
 
-    ImmutableList<TaskInfo> getTaskInfos();
+    ImmutableList<TaskInfo> getTasksInfo();
 
     @FreeBuilder
     interface TaskInfo {
@@ -22,6 +24,8 @@ public interface GetStatusResponse {
         TaskStatus getStatus();
 
         TaskResult.Status getResultStatus();
+
+        LocalDateTime getResultTimestamp();
 
         class Builder extends GetStatusResponse_TaskInfo_Builder {
         }

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
@@ -24,6 +25,13 @@ import java.util.concurrent.Executor;
  */
 @Singleton
 public class CliProcessor extends EventBusComponent {
+
+
+    public static final DateTimeFormatter DEFAULT_TIME_FORMATTER = DateTimeFormatter
+            .ISO_LOCAL_TIME;
+
+    public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter
+            .ISO_LOCAL_DATE;
 
     private static final Logger logger = LoggerFactory.getLogger(CliProcessor.class);
 
@@ -104,7 +112,6 @@ public class CliProcessor extends EventBusComponent {
         if (Constants.ALL.equalsIgnoreCase(taskId)) {
             return null;
         }
-
         return taskId.trim();
     }
 
@@ -116,12 +123,14 @@ public class CliProcessor extends EventBusComponent {
 
     @Subscribe
     public void onStatusResponse(GetStatusResponse response) {
-        System.out.println(String.format("Tasks found : %d", response.getTaskInfos().size()));
-        response.getTaskInfos().forEach((info) ->
+        System.out.println(String.format("Tasks found : %d", response.getTasksInfo().size()));
+        response.getTasksInfo().forEach((info) ->
                 System.out.println(MoreObjects.toStringHelper("")
                         .addValue(info.getTaskName())
                         .addValue(info.getStatus())
                         .addValue(info.getResultStatus())
+                        .addValue(DEFAULT_TIME_FORMATTER.format(info.getResultTimestamp()))
+                        .addValue(DEFAULT_DATE_FORMATTER.format(info.getResultTimestamp()))
                         .toString()));
     }
 
