@@ -15,12 +15,15 @@ import java.util.Arrays;
  */
 public class BotStarter {
 
-    private static final Logger logger = LoggerFactory.getLogger(BotStarter.class);
+    private static final Logger logger = LoggerFactory.getLogger(BotStarter
+            .class);
 
     public static void main(String... args) {
-        logger.info("Starting application with arguments " + Arrays.toString(args));
+        logger.info("Starting application with arguments " + Arrays.toString
+                (args));
         try {
-            CommandLine commandLine = new DefaultParser().parse(new BootOptions(), args);
+            CommandLine commandLine = new DefaultParser().parse(new
+                    BootOptions(), args);
             Guice.createInjector(
                     new CliModule(commandLine),
                     new BotModule())

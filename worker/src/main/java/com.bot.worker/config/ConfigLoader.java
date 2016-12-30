@@ -23,7 +23,8 @@ import java.io.File;
 @NotThreadSafe
 public class ConfigLoader extends EventBusComponent {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigLoader
+            .class);
 
     private final String pathToConfigFile;
 
@@ -33,16 +34,18 @@ public class ConfigLoader extends EventBusComponent {
     }
 
     @Subscribe
-    void onInit(InitEvent event) {
+    void onInit(AppInitEvent event) {
         loadTaskConfigs(Constants.ALL);
     }
 
     @Subscribe
-    void onConfigReload(TaskConfigReloadEvent reloadEvent) {
+    void onConfigReload(TaskConfigReloadRequest reloadEvent) {
         String taskName = reloadEvent.getTaskName().or(Constants.ALL);
-        post(new TaskHoldEvent.Builder().setNullableTaskName(reloadEvent.getTaskName().orNull()).build());
+        post(new TaskHoldRequest.Builder().setNullableTaskName(reloadEvent
+                .getTaskName().orNull()).build());
         loadTaskConfigs(taskName);
-        post(new GetStatusRequest.Builder().setNullableTaskName(reloadEvent.getTaskName().orNull()).build());
+        post(new GetStatusRequest.Builder().setNullableTaskName(reloadEvent
+                .getTaskName().orNull()).build());
     }
 
     private void loadTaskConfigs(String taskName) {
@@ -55,13 +58,15 @@ public class ConfigLoader extends EventBusComponent {
             logger.info("Total non-grouped configs : {}", config.getTasks());
 
             config.getGroups().forEach((group) ->
-                    group.getTasks().stream().filter((c) -> isValidTaskConfig(taskName, c)).forEach((task) ->
+                    group.getTasks().stream().filter((c) -> isValidTaskConfig
+                            (taskName, c)).forEach((task) ->
                             processTaskConfig(group.getGroupName(), task)
                     )
             );
 
             //process un-grouped configs
-            config.getTasks().stream().filter(c -> isValidTaskConfig(taskName, c)).forEach(this::processTaskConfig);
+            config.getTasks().stream().filter(c -> isValidTaskConfig
+                    (taskName, c)).forEach(this::processTaskConfig);
 
             logger.info("All configs loaded");
 
@@ -71,7 +76,8 @@ public class ConfigLoader extends EventBusComponent {
     }
 
     private boolean isValidTaskConfig(String taskName, XmlTaskConfig config) {
-        return Constants.ALL.equals(taskName) || taskName.equals(config.getTaskName());
+        return Constants.ALL.equals(taskName) || taskName.equals(config
+                .getTaskName());
     }
 
     private void processTaskConfig(XmlTaskConfig config) {
@@ -81,7 +87,7 @@ public class ConfigLoader extends EventBusComponent {
     private void processTaskConfig(String groupName, XmlTaskConfig task) {
         logger.info("Loading config {}", task);
 
-        post(new TaskConfigLoaded.Builder()
+        post(new TaskConfigLoadedResponse.Builder()
                 .setGroupName(groupName)
                 .setTaskName(task.getTaskName())
                 .setExecutorId(task.getExecutorId())

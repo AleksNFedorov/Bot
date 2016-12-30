@@ -1,6 +1,6 @@
 package com.bot.worker;
 
-import com.bot.worker.common.events.ExceptionEvent;
+import com.bot.worker.common.events.ExecutionExceptionEvent;
 import com.google.common.eventbus.EventBus;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.Guarded;
@@ -23,7 +23,7 @@ public abstract class EventBusComponent {
 
     protected void postException(@NotNull Throwable exception) {
 
-        eventBus.post(new ExceptionEvent.Builder()
+        eventBus.post(new ExecutionExceptionEvent.Builder()
                 .setComponentName(getComponentName())
                 .setCause(exception)
                 .build()

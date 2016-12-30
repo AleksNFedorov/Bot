@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @FreeBuilder
 public interface GetStatusResponse {
 
-
     ImmutableList<TaskInfo> getTasksInfo();
 
     @FreeBuilder

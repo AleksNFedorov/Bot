@@ -24,7 +24,8 @@ class TaskContext {
     public TaskContext(TaskConfig config, String groupName) {
         this.config = config;
         this.groupName = groupName;
-        setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult.Status.NoStatusYet));
+        setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult
+                .Status.NoStatusYet));
     }
 
     public String getGroupName() {

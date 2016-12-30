@@ -7,7 +7,7 @@ import org.inferred.freebuilder.FreeBuilder;
  * Created by Aleks on 11/17/16.
  */
 @FreeBuilder
-public interface TaskConfigLoaded {
+public interface TaskConfigLoadedResponse {
 
     TaskConfig getTaskConfig();
 
@@ -17,7 +17,6 @@ public interface TaskConfigLoaded {
 
     String getExecutorId();
 
-    class Builder extends TaskConfigLoaded_Builder {
+    class Builder extends TaskConfigLoadedResponse_Builder {
     }
-
 }

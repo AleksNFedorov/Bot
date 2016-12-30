@@ -69,7 +69,8 @@ class XmlConfig {
             this.executorId = executorId;
         }
 
-        @XmlElement(name = "run", required = true, defaultValue = "" + ONE_TIME_TASK)
+        @XmlElement(name = "run", required = true, defaultValue = "" +
+                ONE_TIME_TASK)
         @Override
         public long getRunInterval() {
             return runInterval;
@@ -122,7 +123,8 @@ class XmlConfig {
         }
     }
 
-    private static class MapAdapter extends XmlAdapter<ExecutorConfig, Map<String, String>> {
+    private static class MapAdapter extends XmlAdapter<ExecutorConfig,
+            Map<String, String>> {
 
         MapAdapter() {
         }
@@ -131,7 +133,8 @@ class XmlConfig {
             throw new UnsupportedOperationException();
         }
 
-        public Map<String, String> unmarshal(ExecutorConfig arg0) throws Exception {
+        public Map<String, String> unmarshal(ExecutorConfig arg0) throws
+                Exception {
             Map<String, String> r = new TreeMap<>();
             for (MapElement mapelement : arg0.mapElements) {
                 r.put(mapelement.key, mapelement.value);

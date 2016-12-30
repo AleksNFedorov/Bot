@@ -7,13 +7,14 @@ import org.inferred.freebuilder.FreeBuilder;
  * Created by Aleks on 11/25/16.
  */
 @FreeBuilder
-public interface TaskUpdateEvent {
+public interface TaskUpdateResponse {
 
     Command getCommand();
 
     String getTaskName();
 
-    class Builder extends TaskUpdateEvent_Builder {
-    }
+    String getResultMessage();
 
+    class Builder extends TaskUpdateResponse_Builder {
+    }
 }

@@ -1,7 +1,7 @@
 package com.bot.worker;
 
 import com.bot.worker.cli.CliProcessor;
-import com.bot.worker.common.events.InitEvent;
+import com.bot.worker.common.events.AppInitEvent;
 import com.bot.worker.config.ConfigLoader;
 import com.bot.worker.taskmanager.TaskManager;
 import com.google.common.eventbus.Subscribe;
@@ -15,7 +15,8 @@ import javax.inject.Inject;
  */
 public class BotApplication extends EventBusComponent {
 
-    private static final Logger logger = LoggerFactory.getLogger(BotApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger
+            (BotApplication.class);
 
     private final ConfigLoader configLoader;
 
@@ -24,15 +25,15 @@ public class BotApplication extends EventBusComponent {
     private final CliProcessor cliProcessor;
 
     @Inject
-    public BotApplication(ConfigLoader configLoader, TaskManager taskManager, CliProcessor cliProcessor) {
+    public BotApplication(ConfigLoader configLoader, TaskManager taskManager,
+                          CliProcessor cliProcessor) {
         this.configLoader = configLoader;
         this.taskManager = taskManager;
         this.cliProcessor = cliProcessor;
     }
 
     public void start() {
-        post(new Integer(10));
-        post(new InitEvent());
+        post(AppInitEvent.create());
     }
 
     @Subscribe

@@ -27,7 +27,8 @@ class BotModule extends AbstractModule {
 
     @Provides
     ImmutableList<ITaskExecutor> provideTaskExecutors() {
-        ServiceLoader<ITaskExecutor> service = ServiceLoader.load(ITaskExecutor.class);
+        ServiceLoader<ITaskExecutor> service = ServiceLoader.load
+                (ITaskExecutor.class);
         return ImmutableList.copyOf(service.iterator());
     }
 
@@ -37,12 +38,15 @@ class BotModule extends AbstractModule {
     }
 
     @Provides
-    ScheduledExecutorService provideScheduledExecutorService(@ThreadsCount int threadsCount) {
+    ScheduledExecutorService provideScheduledExecutorService(@ThreadsCount
+                                                                     int
+                                                                     threadsCount) {
         return Executors.newScheduledThreadPool(threadsCount);
     }
 
     @Provides
-    Executor provideScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
+    Executor provideScheduledExecutorService(ScheduledExecutorService
+                                                     scheduledExecutorService) {
         return scheduledExecutorService;
     }
 

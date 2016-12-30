@@ -1,18 +1,20 @@
 package com.bot.worker.common.events;
 
-import com.google.common.base.Optional;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
  * Created by Aleks on 12/4/16.
  */
 @FreeBuilder
-public interface GetStatusRequest {
+public interface GetStatusRequest extends TaskUpdateRequest {
 
-    Optional<String> getTaskName();
-
-    class Builder extends GetStatusRequest_Builder {
-
+    static GetStatusRequest create(String taskName) {
+        return new GetStatusRequest
+                .Builder()
+                .setNullableTaskName(taskName)
+                .build();
     }
 
+    class Builder extends GetStatusRequest_Builder {
+    }
 }

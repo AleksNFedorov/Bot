@@ -15,12 +15,14 @@ public class TaskResultProcessorDecorator implements ITaskResultProcessor {
     private final ImmutableList<ITaskResultProcessor> processors;
 
     @Inject
-    public TaskResultProcessorDecorator(ImmutableList<ITaskResultProcessor> processors) {
+    public TaskResultProcessorDecorator(ImmutableList<ITaskResultProcessor>
+                                                processors) {
         this.processors = processors;
     }
 
     @Override
     public void processResult(TaskResult result, List<TaskResult> group) {
-        processors.forEach((processor) -> processor.processResult(result, group));
+        processors.forEach((processor) -> processor.processResult(result,
+                group));
     }
 }

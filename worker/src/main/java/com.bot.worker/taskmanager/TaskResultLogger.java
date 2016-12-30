@@ -12,7 +12,8 @@ import java.util.List;
  */
 public class TaskResultLogger implements ITaskResultProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskResultLogger.class);
+    private static final Logger logger = LoggerFactory.getLogger
+            (TaskResultLogger.class);
 
     @Override
     public void processResult(TaskResult result, List<TaskResult> group) {
