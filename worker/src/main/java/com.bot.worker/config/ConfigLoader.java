@@ -14,7 +14,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * Created by Aleks on 11/17/16.
@@ -96,9 +98,11 @@ public class ConfigLoader extends EventBusComponent {
         );
     }
 
-    private XmlConfig parseConfig() throws JAXBException {
-        File file = new File(pathToConfigFile);
-        return JAXB.unmarshal(file, XmlConfig.class);
+    private XmlConfig parseConfig() throws JAXBException, IOException {
+        try (BufferedInputStream configStream = new BufferedInputStream(new
+                FileInputStream(pathToConfigFile))) {
+            return JAXB.unmarshal(configStream, XmlConfig.class);
+        }
     }
 
     @Override

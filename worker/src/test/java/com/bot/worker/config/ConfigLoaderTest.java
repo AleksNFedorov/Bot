@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 
 import javax.xml.bind.DataBindingException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -155,7 +156,7 @@ public class ConfigLoaderTest {
         assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
                 .getComponentName()).isEqualTo(loader.getComponentName());
         assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getCause()).isInstanceOf(DataBindingException.class);
+                .getCause()).isInstanceOf(FileNotFoundException.class);
     }
 
     @Test
@@ -174,8 +175,6 @@ public class ConfigLoaderTest {
 
     @Test
     public void testOnInit_emptyFile_throwsException() throws IOException {
-
-        writeContentToFile("", configFile);
 
         loader.onInit(AppInitEvent.create());
 
