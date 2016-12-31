@@ -1,6 +1,8 @@
 package com.bot.worker.config;
 
 import com.bot.common.TaskConfig;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -32,7 +34,7 @@ class XmlConfig {
 
     static class XmlTaskGroupConfig {
 
-        @XmlAttribute(name = "key", required = true)
+        @XmlAttribute(name = "id", required = true)
         private String groupName;
 
         @XmlElement(name = "task", required = true)
@@ -45,6 +47,17 @@ class XmlConfig {
         List<XmlTaskConfig> getTasks() {
             return tasks;
         }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
+        }
+
     }
 
     @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -99,11 +112,32 @@ class XmlConfig {
         void setConfig(Map<String, String> config) {
             this.config = config;
         }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
+        }
     }
 
     private static class ExecutorConfig {
         @XmlElement(name = "property")
         List<MapElement> mapElements;
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
+        }
+
     }
 
     private static class MapElement {
@@ -120,6 +154,16 @@ class XmlConfig {
         MapElement(String key, String value) {
             this.key = key;
             this.value = value;
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this, false);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return EqualsBuilder.reflectionEquals(this, obj);
         }
     }
 

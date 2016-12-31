@@ -58,7 +58,7 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
-    private synchronized void onNewTaskConfig(TaskConfigLoadedResponse
+    synchronized void onNewTaskConfig(TaskConfigLoadedResponse
                                                           newConfigEvent) {
         String taskGroup = newConfigEvent.getGroupName();
         final TaskConfig taskConfig = newConfigEvent.getTaskConfig();
