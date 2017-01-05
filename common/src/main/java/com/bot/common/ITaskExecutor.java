@@ -24,6 +24,6 @@ public interface ITaskExecutor<C extends TaskConfig> {
      * @param config task config
      * @return task execution result
      */
-    TaskResult executeTask(TaskConfig config);
+    TaskResult executeTask(C config);
 
 }

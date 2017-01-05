@@ -55,6 +55,7 @@ public class ConfigLoaderTest {
             createResponse("",
                     "task_2", "testExecutor", 2L, 1L);
     private static int fileSequence = 0;
+
     @Rule
     public final MockitoRule mockitoInit = MockitoJUnit.rule();
 
@@ -67,18 +68,6 @@ public class ConfigLoaderTest {
     private ConfigLoader loader;
 
     private File configFile;
-
-    private static void writeContentToFile(String content, File dst) throws
-            IOException {
-
-        Writer stream = Files.asCharSink(dst,
-                StandardCharsets.UTF_8,
-                FileWriteMode
-                        .APPEND).openBufferedStream();
-
-        stream.write(content);
-        stream.close();
-    }
 
     private static TaskConfigLoadedResponse createResponse(String groupName,
                                                            String taskName,
@@ -94,8 +83,6 @@ public class ConfigLoaderTest {
 
         return new TaskConfigLoadedResponse.Builder()
                 .setGroupName(groupName)
-                .setTaskName(task.getTaskName())
-                .setExecutorId(task.getExecutorId())
                 .setTaskConfig(task)
                 .build();
     }
@@ -117,8 +104,20 @@ public class ConfigLoaderTest {
         return configFile;
     }
 
+    private static void writeContentToFile(String content, File dst) throws
+            IOException {
+
+        Writer stream = Files.asCharSink(dst,
+                StandardCharsets.UTF_8,
+                FileWriteMode
+                        .APPEND).openBufferedStream();
+
+        stream.write(content);
+        stream.close();
+    }
+
     @Before
-    public void initTest() throws IOException {
+    public void setUp() throws IOException {
         doNothing().when(eventBus).post(postEventCaptor.capture());
 
         configFile = createTmpConfigFile();
@@ -128,7 +127,7 @@ public class ConfigLoaderTest {
     }
 
     @After
-    public void finalizeTest() {
+    public void tearDown() {
         configFile.delete();
     }
 
@@ -227,19 +226,18 @@ public class ConfigLoaderTest {
             IOException {
 
         TaskHoldRequest holdRequest = TaskHoldRequest.create
-                (NO_GROUP_TASK2.getTaskName());
+                (NO_GROUP_TASK2.getTaskConfig().getTaskName());
         GetStatusRequest taskStatusRequest = GetStatusRequest.create
-                (NO_GROUP_TASK2.getTaskName());
+                (NO_GROUP_TASK2.getTaskConfig().getTaskName());
         writeContentToFile(CONFIG_CONTENT, configFile);
 
         loader.onConfigReload(TaskConfigReloadRequest.create
-                (NO_GROUP_TASK2.getTaskName()));
+                (NO_GROUP_TASK2.getTaskConfig().getTaskName()));
 
         assertThat(postEventCaptor.getAllValues()).containsExactly(
                 holdRequest,
                 NO_GROUP_TASK2,
                 taskStatusRequest
         );
-
     }
 }

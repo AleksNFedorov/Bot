@@ -83,7 +83,7 @@ public class ConfigLoader extends EventBusComponent {
     }
 
     private void processTaskConfig(XmlTaskConfig config) {
-        processTaskConfig("", config);
+        processTaskConfig(Constants.NO_GROUP, config);
     }
 
     private void processTaskConfig(String groupName, XmlTaskConfig task) {
@@ -91,8 +91,6 @@ public class ConfigLoader extends EventBusComponent {
 
         post(new TaskConfigLoadedResponse.Builder()
                 .setGroupName(groupName)
-                .setTaskName(task.getTaskName())
-                .setExecutorId(task.getExecutorId())
                 .setTaskConfig(task)
                 .build()
         );

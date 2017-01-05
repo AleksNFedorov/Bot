@@ -32,6 +32,7 @@ class BotModule extends AbstractModule {
         return ImmutableList.copyOf(service.iterator());
     }
 
+    //TODO load with ServiceLoader
     @Provides
     ImmutableList<ITaskResultProcessor> provideResultProcessors() {
         return ImmutableList.of(new TaskResultLogger());

@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by Aleks on 11/23/16.
  */
+//TODO consider to convert into nested class
 public class TaskResultLogger implements ITaskResultProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger

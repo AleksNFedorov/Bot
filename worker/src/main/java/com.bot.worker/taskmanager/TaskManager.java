@@ -5,6 +5,8 @@ import com.bot.common.ITaskResultProcessor;
 import com.bot.common.TaskConfig;
 import com.bot.common.TaskResult;
 import com.bot.worker.EventBusComponent;
+import com.bot.worker.common.Annotations;
+import com.bot.worker.common.Constants;
 import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.*;
 import com.google.common.base.Optional;
@@ -15,6 +17,7 @@ import com.google.common.collect.TreeMultimap;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
+import com.google.common.util.concurrent.UncheckedTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +26,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Created by Aleks on 11/19/16.
@@ -37,6 +40,9 @@ public class TaskManager extends EventBusComponent {
             .class);
 
     private final ScheduledExecutorService executorService;
+    //TODO add comment, without second executor - high change to run into
+    // deadlock
+    private final ExecutorService taskExecutor;
 
     private final Map<String, TaskContext> idToTask = new HashMap<>();
     private final Multimap<String, TaskResult> groupResults = TreeMultimap
@@ -47,14 +53,31 @@ public class TaskManager extends EventBusComponent {
     private final ITaskResultProcessor resultProcessor;
 
     @Inject
-    public TaskManager(ScheduledExecutorService executorService,
+    public TaskManager(@Annotations.ThreadsCount int threadsCount,
                        ImmutableList<ITaskExecutor> executors,
                        ITaskResultProcessor resultProcessor
     ) {
-        this.executorService = executorService;
+        checkArgument(threadsCount > 0, "Threads count must " +
+                "be positive");
+        this.executorService = new ScheduledThreadPoolExecutor(threadsCount);
+        this.taskExecutor = Executors.newCachedThreadPool();
         this.executors = executors.stream().collect(Collectors.toMap
                 (ITaskExecutor::getId, x -> x));
         this.resultProcessor = resultProcessor;
+    }
+
+    private static TaskStatus getNewTaskStatus(TaskContext context) {
+        TaskStatus newStatus = TaskStatus.Unknown;
+        switch (context.getStatus()) {
+            case Running:
+                newStatus = context.getConfig().isOneTimeTask() ?
+                        TaskStatus.Finished : TaskStatus.Scheduled;
+                break;
+            case Hold:
+                newStatus = TaskStatus.Hold;
+                break;
+        }
+        return newStatus;
     }
 
     @Subscribe
@@ -81,7 +104,6 @@ public class TaskManager extends EventBusComponent {
                     taskConfig
                     .getRunInterval(), TimeUnit.SECONDS);
         }
-
         taskContext.setFuture(taskFuture);
     }
 
@@ -94,7 +116,7 @@ public class TaskManager extends EventBusComponent {
 
         return () -> {
             logger.info("Running {}", taskConfig.getTaskName());
-            TimeLimiter limiter = new SimpleTimeLimiter(executorService);
+            TimeLimiter limiter = new SimpleTimeLimiter(taskExecutor);
             TaskResult result;
             try {
                 taskContext.setStatus(TaskStatus.Running);
@@ -102,61 +124,53 @@ public class TaskManager extends EventBusComponent {
                             return executor.executeTask(taskConfig);
                         },
                         deadline, TimeUnit.SECONDS, true);
+            } catch (UncheckedTimeoutException timOut) {
+                result = new TaskResult(taskConfig.getTaskName(),
+                        TaskResult.Status.DeadlineExceed,
+                        timOut.getLocalizedMessage());
             } catch (Exception e) {
-                result = new TaskResult(taskConfig.getTaskName(), TaskResult
-                        .Status.Exception, e
-                        .getLocalizedMessage());
+                result = new TaskResult(taskConfig.getTaskName(),
+                        TaskResult.Status.Exception,
+                        e.getLocalizedMessage());
+
                 post(new ExecutionExceptionEvent.Builder().setCause(e)
                         .setComponentName(this
-                        .getComponentName()).build());
+                                .getComponentName()).build());
             }
-            post(new TaskExecutionComplete.Builder()
-                    .setGroupName(taskGroup)
-                    .setTaskName(taskConfig.getTaskName())
-                    .setTaskResult(result).build());
-        };
 
+            processExecutionResult(taskGroup, taskConfig.getTaskName(), result);
+        };
     }
 
     private TaskContext createTaskContent(String groupName, TaskConfig config) {
         idToTask.putIfAbsent(config.getTaskName(), new TaskContext(config,
                 groupName));
-        TaskContext taskContext = idToTask.get(config.getTaskName());
-        return taskContext;
+        return idToTask.get(config.getTaskName());
     }
 
-    @Subscribe
-    private synchronized void onTaskExecutionComplete(TaskExecutionComplete
-                                                              completeEvent) {
-        TaskResult result = completeEvent.getTaskResult();
-        TaskContext context = idToTask.get(completeEvent.getTaskName());
-        groupResults.remove(completeEvent.getGroupName(), result);
-        groupResults.put(completeEvent.getGroupName(), result);
+    private void processExecutionResult(String groupName, String
+            taskName, TaskResult result) {
+        TaskContext context = idToTask.get(taskName);
+        groupResults.remove(groupName, result);
+        groupResults.put(groupName, result);
 
-        TaskStatus newStatus = TaskStatus.Unknown;
-        switch (context.getStatus()) {
-            case Running:
-                newStatus = context.getConfig().isOneTimeTask() ? TaskStatus
-                        .Finished :
-                        TaskStatus.Scheduled;
-                break;
-            case Hold:
-                newStatus = TaskStatus.Hold;
-                break;
-
-        }
+        TaskStatus newStatus = getNewTaskStatus(context);
 
         context.setStatus(newStatus);
         context.setLastTaskResult(result);
 
-        resultProcessor.processResult(result, groupResults.get(completeEvent
-                .getGroupName())
-                .stream().filter(r -> r != result).collect(Collectors.toList
-                        ()));
+        List<TaskResult> filteredGroupResults =
+                Constants.NO_GROUP.equals(groupName) ? ImmutableList.of() :
+                        groupResults.get(groupName)
+                                .stream()
+                                .filter(r -> (r != result))
+                                .collect(Collectors.toList());
+
+        resultProcessor.processResult(result, filteredGroupResults);
     }
 
     @Subscribe
-    private synchronized void onTaskDropEvent(TaskDropRequest event) {
+    synchronized void onTaskDropEvent(TaskDropRequest event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
         tasks.forEach(context -> {
             context.putOnHold();
@@ -169,37 +183,42 @@ public class TaskManager extends EventBusComponent {
                             (Collectors.toList());
             groupResults.replaceValues(context.getGroupName(), cleanedResults);
         });
-        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName
-                (event.getTaskName()
-                .orNull()).build());
+        onGetStatusRequest(GetStatusRequest.create(
+                event.getTaskName().orNull()));
     }
 
     @Subscribe
-    private synchronized void onTaskScheduleEvent(TaskScheduleRequest event) {
+    synchronized void onTaskScheduleEvent(TaskScheduleRequest event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
         tasks.stream().filter(k -> k.getStatus().equals(TaskStatus.Hold))
                 .forEach
                 (this::scheduleTask);
-        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName
-                (event.getTaskName()
-                .orNull()).build());
+
+        onGetStatusRequest(GetStatusRequest.create(
+                event.getTaskName().orNull()));
     }
 
     @Subscribe
-    private synchronized void onTaskHoldEvent(TaskHoldRequest event) {
+    synchronized void onTaskHoldEvent(TaskHoldRequest event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
         tasks.stream().filter(k -> (
                 k.getStatus().equals(TaskStatus.Running) ||
                         k.getStatus().equals(TaskStatus.Scheduled))).forEach
                 (TaskContext::putOnHold);
-        onGetStatusRequest(new GetStatusRequest.Builder().setNullableTaskName
-                (event.getTaskName()
-                .orNull()).build());
 
+        onGetStatusRequest(GetStatusRequest.create(
+                event.getTaskName().orNull()));
     }
 
     @Subscribe
-    private synchronized void onGetStatusRequest(GetStatusRequest request) {
+    synchronized void onAppStop(StopAppRequest request) {
+        this.onTaskDropEvent(TaskDropRequest.create(null));
+        executorService.shutdownNow();
+        taskExecutor.shutdownNow();
+    }
+
+    @Subscribe
+    synchronized void onGetStatusRequest(GetStatusRequest request) {
         List<TaskContext> tasks = getTasksById(request.getTaskName());
 
         post(new GetStatusResponse.Builder()

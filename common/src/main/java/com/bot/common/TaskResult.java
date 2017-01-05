@@ -50,6 +50,29 @@ public class TaskResult {
         return message;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TaskResult result = (TaskResult) o;
+
+        if (status != result.status) return false;
+        if (message != null ? !message.equals(result.message) : result
+                .message != null)
+            return false;
+        return taskName != null ? taskName.equals(result.taskName) : result
+                .taskName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = status != null ? status.hashCode() : 0;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (taskName != null ? taskName.hashCode() : 0);
+        return result;
+    }
+
     public enum Status {
         NoStatusYet,
         Success,

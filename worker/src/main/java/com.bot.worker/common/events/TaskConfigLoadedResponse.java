@@ -13,10 +13,6 @@ public interface TaskConfigLoadedResponse {
 
     String getGroupName();
 
-    String getTaskName();
-
-    String getExecutorId();
-
     class Builder extends TaskConfigLoadedResponse_Builder {
     }
 }

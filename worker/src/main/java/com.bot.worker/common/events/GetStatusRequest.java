@@ -8,6 +8,10 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface GetStatusRequest extends TaskUpdateRequest {
 
+    static GetStatusRequest create() {
+        return GetStatusRequest.create(null);
+    }
+
     static GetStatusRequest create(String taskName) {
         return new GetStatusRequest
                 .Builder()
