@@ -57,8 +57,12 @@ class TaskContext {
     }
 
     void putOnHold() {
-        future.cancel(true);
-        setStatus(TaskStatus.Hold);
+        boolean success = future.cancel(true);
+        if (config.isOneTimeTask() && success) {
+            setStatus(TaskStatus.Hold);
+        } else if (!config.isOneTimeTask()) {
+            setStatus(TaskStatus.Hold);
+        }
     }
 
     public TaskConfig getConfig() {

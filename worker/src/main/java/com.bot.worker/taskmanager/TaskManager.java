@@ -39,7 +39,7 @@ public class TaskManager extends EventBusComponent {
     private static final Logger logger = LoggerFactory.getLogger(TaskManager
             .class);
 
-    private final ScheduledExecutorService executorService;
+    private final ScheduledThreadPoolExecutor executorService;
     //TODO add comment, without second executor - high change to run into
     // deadlock
     private final ExecutorService taskExecutor;
@@ -60,6 +60,7 @@ public class TaskManager extends EventBusComponent {
         checkArgument(threadsCount > 0, "Threads count must " +
                 "be positive");
         this.executorService = new ScheduledThreadPoolExecutor(threadsCount);
+        this.executorService.setRemoveOnCancelPolicy(true);
         this.taskExecutor = Executors.newCachedThreadPool();
         this.executors = executors.stream().collect(Collectors.toMap
                 (ITaskExecutor::getId, x -> x));
@@ -133,9 +134,11 @@ public class TaskManager extends EventBusComponent {
                         TaskResult.Status.Exception,
                         e.getLocalizedMessage());
 
-                post(new ExecutionExceptionEvent.Builder().setCause(e)
+                post(new ExecutionExceptionEvent.Builder()
+                        .setCause(e)
                         .setComponentName(this
-                                .getComponentName()).build());
+                                .getComponentName())
+                        .build());
             }
 
             processExecutionResult(taskGroup, taskConfig.getTaskName(), result);
@@ -190,7 +193,11 @@ public class TaskManager extends EventBusComponent {
     @Subscribe
     synchronized void onTaskScheduleEvent(TaskScheduleRequest event) {
         List<TaskContext> tasks = getTasksById(event.getTaskName());
-        tasks.stream().filter(k -> k.getStatus().equals(TaskStatus.Hold))
+        tasks.stream().filter(k ->
+                //TODO add event to status mapping
+                k.getStatus().equals(TaskStatus.Hold) ||
+                        k.getStatus().equals(TaskStatus.Finished)
+        )
                 .forEach
                 (this::scheduleTask);
 

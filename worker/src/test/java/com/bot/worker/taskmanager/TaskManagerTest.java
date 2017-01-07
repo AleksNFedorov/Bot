@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoRule;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
@@ -35,31 +36,23 @@ import static org.mockito.Mockito.doNothing;
  */
 public class TaskManagerTest {
 
+    private static int taskIdSequence;
     @Rule
     public final MockitoRule mockitoInit = MockitoJUnit.rule();
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
     @Mock
     private EventBus eventBus;
-
     @Mock
     private ITaskResultProcessor resultProcessor;
-
     @Captor
     private ArgumentCaptor eventBusPostCaptor;
-
     @Captor
     private ArgumentCaptor<TaskResult> resultProcessorCaptor;
-
     @Captor
     private ArgumentCaptor<List<TaskResult>> groupResultProcessorCaptor;
-
     private ITaskExecutor<TestTaskConfig> executor;
-
     private TaskManager taskManager;
-
     private AtomicReference<CountDownLatch> latchReference = new
             AtomicReference<>();
 
@@ -87,7 +80,7 @@ public class TaskManagerTest {
                 (resultProcessorCaptor.capture(), groupResultProcessorCaptor
                         .capture());
         doNothing().when(eventBus).post(eventBusPostCaptor.capture());
-        taskManager = new TaskManager(2, ImmutableList.of
+        taskManager = new TaskManager(1, ImmutableList.of
                 (executor), resultProcessor);
         taskManager.setEventBus(eventBus);
     }
@@ -178,7 +171,7 @@ public class TaskManagerTest {
                 .setTaskConfig(config2)
                 .build());
 
-        config2.waitRunsEqual(1);
+        config2.waitRunCompleteEqual(1);
 
         taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
                 .setGroupName("TestGroup")
@@ -227,9 +220,7 @@ public class TaskManagerTest {
 
         CountDownLatch latch = new CountDownLatch(1);
         latchReference.set(latch);
-        TestTaskConfig config = new TestTaskConfig(TaskResult.Status.Success,
-                1, -1L);
-        config.withRunException();
+        TaskConfig config = new ExceptionTestTaskConfig();
 
         taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
                 .setGroupName("TestGroup")
@@ -278,7 +269,7 @@ public class TaskManagerTest {
         taskManager.onGetStatusRequest(GetStatusRequest.create(config
                 .getTaskName()));
 
-        TaskResult result = resultProcessorCaptor.getValue();
+        TaskResult result = resultProcessorCaptor.getAllValues().get(0);
         GetStatusResponse expectedResponse = new GetStatusResponse.Builder()
                 .addTasksInfo(buildTaskInfo(TaskStatus.Finished, result))
                 .build();
@@ -288,7 +279,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    public void testGetStatusRequest_allTasks_responsePost()
+    public void testGetStatusRequest_allTasks_responsePosted()
             throws
             InterruptedException {
 
@@ -312,7 +303,7 @@ public class TaskManagerTest {
                 .setTaskConfig(config2)
                 .build());
 
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(15, TimeUnit.SECONDS);
 
         taskManager.onGetStatusRequest(GetStatusRequest.create());
 
@@ -327,43 +318,177 @@ public class TaskManagerTest {
         assertThat(eventBusPostCaptor.getValue()).isEqualTo(expectedResponse);
     }
 
-    private static class TestTaskConfig extends TaskConfig implements Runnable {
+    @Test
+    public void testOnTaskHoldEvent_oneTimeTask_running_exceptionThrown_stateChangedToHold() throws InterruptedException {
 
-        private static int taskIdSequence;
+        CountDownLatch resultProcessedLatch = new CountDownLatch(1);
+        latchReference.set(resultProcessedLatch);
+
+        TestTaskConfig config = new TestTaskConfig(
+                TaskResult.Status.Success,
+                1, -1L);
+        config.setBlockRun(true);
+
+        taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
+                .setGroupName("TestGroup")
+                .setTaskConfig(config)
+                .build());
+
+        config.waitRunStartEqual(1);
+
+        taskManager.onTaskHoldEvent(TaskHoldRequest.create(config.getTaskName()));
+        config.setBlockRun(false);
+
+        resultProcessedLatch.await(10, TimeUnit.SECONDS);
+
+        GetStatusResponse response;
+        if (eventBusPostCaptor.getAllValues().get(0) instanceof ExecutionExceptionEvent) {
+            response = (GetStatusResponse) eventBusPostCaptor.getAllValues().get(1);
+        } else {
+            response = (GetStatusResponse) eventBusPostCaptor.getAllValues().get(0);
+        }
+
+        assertThat(eventBusPostCaptor.getAllValues()).hasSize(2);
+        assertThat(response.getTasksInfo()).hasSize(1);
+        assertThat(response.getTasksInfo().get(0).getTaskName()).isEqualTo(config.getTaskName());
+        assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.Hold);
+        assertThat(response.getTasksInfo().get(0).getResultStatus()).isEqualTo(TaskResult.Status.NoStatusYet);
+    }
+
+    @Test
+    public void testOnTaskHoldEvent_oneTimeTask_finished_noChanges() throws InterruptedException {
+
+        CountDownLatch resultProcessedLatch = new CountDownLatch(1);
+        latchReference.set(resultProcessedLatch);
+
+        TestTaskConfig config = new TestTaskConfig(
+                TaskResult.Status.Success,
+                1, -1L);
+
+        taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
+                .setGroupName("TestGroup")
+                .setTaskConfig(config)
+                .build());
+
+        resultProcessedLatch.await(10, TimeUnit.SECONDS);
+
+        taskManager.onTaskHoldEvent(TaskHoldRequest.create(config.getTaskName()));
+        GetStatusResponse response = (GetStatusResponse) eventBusPostCaptor.getValue();
+
+        assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
+        assertThat(response.getTasksInfo()).hasSize(1);
+        assertThat(response.getTasksInfo().get(0).getTaskName()).isEqualTo(config.getTaskName());
+        assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.Finished);
+        assertThat(response.getTasksInfo().get(0).getResultStatus()).isEqualTo(TaskResult.Status.Success);
+    }
+
+    @Test
+    public void testOnTaskScheduleEvent_oneTimeTask_finished_executedAgain() throws InterruptedException {
+
+        CountDownLatch resultProcessedLatch = new CountDownLatch(1);
+        latchReference.set(resultProcessedLatch);
+
+        TestTaskConfig config = new TestTaskConfig(
+                TaskResult.Status.Success,
+                1, -1L);
+
+        taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
+                .setGroupName("TestGroup")
+                .setTaskConfig(config)
+                .build());
+
+        resultProcessedLatch.await(10, TimeUnit.SECONDS);
+
+        resultProcessedLatch = new CountDownLatch(1);
+        latchReference.set(resultProcessedLatch);
+
+        taskManager.onTaskScheduleEvent(TaskScheduleRequest.create(config.getTaskName()));
+        resultProcessedLatch.await(10, TimeUnit.SECONDS);
+
+
+        GetStatusResponse response = (GetStatusResponse) eventBusPostCaptor.getAllValues().get(0);
+
+        assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
+        assertThat(response.getTasksInfo()).hasSize(1);
+        assertThat(response.getTasksInfo().get(0).getTaskName()).isEqualTo(config.getTaskName());
+        assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.Finished);
+        assertThat(response.getTasksInfo().get(0).getResultStatus()).isEqualTo(TaskResult.Status.Success);
+    }
+
+    private static class TestTaskConfig extends TaskConfig implements Runnable {
 
         private final TaskResult.Status expectedStatus;
 
         private final long executionTime;
 
-        private final AtomicInteger runCounter = new AtomicInteger();
-
-        private volatile boolean throwExceptionOnRun;
+        private final AtomicInteger runCompleteCounter = new AtomicInteger();
+        private final AtomicInteger runStartCounter = new AtomicInteger();
+        private final AtomicBoolean blockRun = new AtomicBoolean(false);
 
         TestTaskConfig(TaskResult.Status expectedStatus, long
                 executionTime, long runInterval) {
+            this(expectedStatus, executionTime, runInterval, 4);
+        }
+
+        TestTaskConfig(TaskResult.Status expectedStatus, long
+                executionTime, long runInterval, long deadline) {
             this.expectedStatus = expectedStatus;
             this.executionTime = executionTime;
             this.executorId = TestExecutor.TASK_EXECUTOR_ID;
             this.taskName = "TestTask_" + taskIdSequence++;
             this.runInterval = runInterval;
-            this.deadline = 4;
+            this.deadline = deadline;
         }
 
-        void withRunException() {
-            throwExceptionOnRun = true;
-        }
 
         public void run() {
-            runCounter.incrementAndGet();
-            if (throwExceptionOnRun) {
-                throw new RuntimeException("Expected");
+            try {
+                System.out.println(String.format("Task [%s] executing", getTaskName()));
+                runStartCounter.incrementAndGet();
+                waitRunBlocked();
+                TimeUnit.SECONDS.sleep(this.executionTime);
+                System.out.println(String.format("Task [%s] executed", getTaskName()));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                runCompleteCounter.incrementAndGet();
             }
         }
 
-        void waitRunsEqual(int count) {
-            while (runCounter.get() != count) {
+        private void waitRunBlocked() {
+            while (blockRun.get()) {
+                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(1));
+                System.out.println(String.format("Task [%s] blocked", getTaskName()));
+            }
+        }
+
+        private void setBlockRun(boolean blockRun) {
+            this.blockRun.set(blockRun);
+        }
+
+        void waitRunCompleteEqual(int count) {
+            while (runCompleteCounter.get() != count) {
                 LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(1));
             }
+        }
+
+        void waitRunStartEqual(int count) {
+            while (runStartCounter.get() != count) {
+                LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(1));
+            }
+        }
+
+    }
+
+    private static class ExceptionTestTaskConfig extends TestTaskConfig implements Runnable {
+
+        ExceptionTestTaskConfig() {
+            super(TaskResult.Status.Success, 1, 1, 4L);
+        }
+
+        @Override
+        public void run() {
+            throw new RuntimeException("Expected");
         }
     }
 
@@ -373,15 +498,7 @@ public class TaskManagerTest {
 
         @Override
         public TaskResult executeTask(TestTaskConfig config) {
-
-            try {
-                TimeUnit.SECONDS.sleep(config.executionTime);
-                config.run();
-                System.out.println(String.format("Task [%s] executed", config
-                        .getTaskName()));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            config.run();
             return createTaskResult(config);
         }
 
