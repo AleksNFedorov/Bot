@@ -10,7 +10,6 @@ import org.apache.commons.cli.Options;
 class RunOptions extends Options {
 
     RunOptions() {
-
         Command command = Command.help;
         addOption(Option
                 .builder(command.getShortOpt())

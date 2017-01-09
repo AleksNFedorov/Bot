@@ -14,7 +14,6 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.format.DateTimeFormatter;
@@ -38,33 +37,48 @@ public class CliProcessor extends EventBusComponent {
     private static final Logger logger = LoggerFactory.getLogger(CliProcessor
             .class);
 
-    //TODO avoid using executor
+
     private final Executor executor;
 
     @Inject
-    public CliProcessor(Executor executor) {
+    CliProcessor(Executor executor) {
         this.executor = executor;
+    }
+
+    private static void displayHelpMessage() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(" ", "Available commands", new RunOptions(), "",
+                false);
+    }
+
+    private static String getTaskIdFromOptionValue(String taskId) {
+        if (Constants.ALL.equalsIgnoreCase(taskId)) {
+            return null;
+        }
+        return Strings.nullToEmpty(taskId).trim();
     }
 
     @Subscribe
     void onInit(AppInitEvent init) {
-        executor.execute(() -> {
-            final Scanner scanner = new Scanner(System.in);
-            while (!Thread.currentThread().isInterrupted()) {
-                String command = scanner.nextLine();
-                try {
-                    if (!Strings.isNullOrEmpty(command)) {
-                        processCommand(command);
+        executor.execute(
+                () -> {
+                    final Scanner scanner = new Scanner(System.in);
+                    while (!Thread.currentThread().isInterrupted()) {
+                        String command = scanner.nextLine();
+                        try {
+                            if (!Strings.isNullOrEmpty(command)) {
+                                processCommand(command);
+                            }
+                        } catch (Exception e) {
+                            logger.error("Exception during processing command ", e);
+                            System.out.println(String.format("%s, use '-help' for " +
+                                    "more info", e.getLocalizedMessage()));
+                            displayHelpMessage();
+                        }
                     }
-                } catch (Exception e) {
-                    logger.error("Exception during processing command ", e);
-                    System.out.println(String.format("%s, use '-help' for " +
-                            "more info", e.getLocalizedMessage()));
-                    displayHelpMessage();
+                    logger.warn("CLI Stopped");
                 }
-
-            }
-        });
+        );
     }
 
     private void processCommand(String commandLineString)
@@ -80,20 +94,17 @@ public class CliProcessor extends EventBusComponent {
             }
         }
 
-        //TODO replace with throwing exception
         if (unknownCommand) {
-            System.out.println("Unknown command");
-            displayHelpMessage();
+            throw new IllegalArgumentException(String.format("Unable to process command: [%s]", commandLineString));
         }
     }
 
     private void processOption(Command command, CommandLine commandLine) {
-        logger.info("Processing new cli command [%s]", command.name());
+        logger.info("Processing CLI command [%s]", command.name());
         System.out.println(command.name());
-        String taskId = taskOptionValueToParameter(commandLine
+        String taskId = getTaskIdFromOptionValue(commandLine
                 .getOptionValue(command.name()));
 
-        //TODO replace switch with map
         switch (command) {
             case help:
                 displayHelpMessage();
@@ -118,21 +129,6 @@ public class CliProcessor extends EventBusComponent {
                         command.name()));
         }
     }
-
-    //TODO refactor name
-    private String taskOptionValueToParameter(@Nullable String taskId) {
-        if (Constants.ALL.equalsIgnoreCase(taskId)) {
-            return null;
-        }
-        return Strings.nullToEmpty(taskId).trim();
-    }
-
-    private void displayHelpMessage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(" ", "Available commands", new RunOptions(), "",
-                false);
-    }
-
 
     @Subscribe
     void onStatusResponse(GetStatusResponse response) {

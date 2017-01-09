@@ -5,9 +5,12 @@ import org.inferred.freebuilder.FreeBuilder;
 /**
  * Created by Aleks on 12/8/16.
  */
-//TODO consider default create();
 @FreeBuilder
 public interface TaskDropRequest extends TaskUpdateRequest {
+
+    static TaskDropRequest create() {
+        return TaskDropRequest.create(null);
+    }
 
     static TaskDropRequest create(String taskName) {
         return new TaskDropRequest

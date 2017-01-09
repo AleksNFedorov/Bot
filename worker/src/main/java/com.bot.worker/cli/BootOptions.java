@@ -6,18 +6,26 @@ import org.apache.commons.cli.Options;
 /**
  * Created by Aleks on 11/14/16.
  */
-public class BootOptions extends Options {
+class BootOptions extends Options {
 
     static final String THREADS_COUNT = "threads-count";
     static final String TASK_CONFIG_FILE_PATH = "task-config-file";
 
-    public BootOptions() {
-        Option threadsCount = new Option("tc", THREADS_COUNT, false, "Threads" +
-                " count to execute task");
-        threadsCount.setType(Integer.class);
+    BootOptions() {
+        addOption(Option
+                .builder("tc")
+                .longOpt(THREADS_COUNT)
+                .desc("Task execution thread pool size")
+                .hasArg()
+                .type(Integer.class)
+                .build());
 
-        //TODO unify style
-        addOption(threadsCount);
-        addOption(new Option("file", TASK_CONFIG_FILE_PATH, true, "Path tasks configuration file "));
+        addOption(Option
+                .builder("config")
+                .longOpt(TASK_CONFIG_FILE_PATH)
+                .desc("Path to configuration file")
+                .hasArg()
+                .type(String.class)
+                .build());
     }
 }

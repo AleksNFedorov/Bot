@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -52,11 +52,11 @@ public class CliProcessorTest {
 
     private byte[] commandBuffer = new byte[20];
 
-    private Executor cliExecutor;
+    private ExecutorService cliExecutor;
 
     @Before
     public void initTest() {
-        cliExecutor = Executors.newSingleThreadExecutor();
+        cliExecutor = Executors.newFixedThreadPool(1);
         processor = new CliProcessor(cliExecutor);
         processor.setEventBus(eventBus);
         out = new ByteArrayOutputStream(1000);
@@ -77,12 +77,11 @@ public class CliProcessorTest {
     public void finishTest() {
         System.setIn(originalIn);
         System.setOut(originalOut);
+        cliExecutor.shutdownNow();
     }
 
     @Test
     public void testHelpCommand_helpPrinted() {
-        processor.onInit(AppInitEvent.create());
-
         sendCommand("help", "");
 
         assertThat(out.toString()).startsWith("help");
@@ -90,68 +89,52 @@ public class CliProcessorTest {
 
     @Test
     public void testStatusCommand_specificTask_statusRequestSent() {
-        GetStatusRequest expectedRequest = GetStatusRequest.create("1");
-        testCommand("status", "1", expectedRequest);
+        testCommand("status", "1", GetStatusRequest.create("1"));
     }
 
     @Test
     public void testStatusCommand_allTasks_statusRequestSent() {
-        GetStatusRequest expectedRequest = GetStatusRequest.create(null);
-        testCommand("status", "all", expectedRequest);
+        testCommand("status", "all", GetStatusRequest.create());
     }
 
     @Test
     public void testHoldCommand_specificTask_statusRequestSent() {
-        TaskHoldRequest expected = TaskHoldRequest.create("1");
-        testCommand("hold", "1", expected);
+        testCommand("hold", "1", TaskHoldRequest.create("1"));
     }
 
     @Test
     public void testHoldCommand_allTasks_statusRequestSent() {
-        TaskHoldRequest expected = TaskHoldRequest.create(null);
-        testCommand("hold", "all", expected);
+        testCommand("hold", "all", TaskHoldRequest.create());
     }
 
     @Test
     public void testScheduleCommand_specificTask_statusRequestSent() {
-        TaskScheduleRequest expected = new TaskScheduleRequest.Builder()
-                .setTaskName("1").build();
-        testCommand("schedule", "1", expected);
+        testCommand("schedule", "1", TaskScheduleRequest.create("1"));
     }
 
     @Test
     public void testScheduleCommand_allTasks_statusRequestSent() {
-        TaskScheduleRequest expected = new TaskScheduleRequest.Builder()
-                .setNullableTaskName(null).build();
-        testCommand("schedule", "all", expected);
+        testCommand("schedule", "all", TaskScheduleRequest.create());
     }
 
     @Test
     public void testReloadCommand_specificTask_statusRequestSent() {
-        TaskConfigReloadRequest expected = new TaskConfigReloadRequest.Builder()
-                .setTaskName("1").build();
-        testCommand("reload", "1", expected);
+        testCommand("reload", "1", TaskConfigReloadRequest.create("1"));
     }
 
     @Test
     public void testReloadCommand_allTasks_statusRequestSent() {
-        TaskConfigReloadRequest expected = new TaskConfigReloadRequest.Builder()
-                .setNullableTaskName(null).build();
-        testCommand("reload", "all", expected);
+        testCommand("reload", "all", TaskConfigReloadRequest.create());
     }
 
     @Test
     public void testDropCommand_specificTask_statusRequestSent() {
-        TaskDropRequest expected = new TaskDropRequest.Builder()
-                .setTaskName("1").build();
-        testCommand("drop", "1", expected);
+        testCommand("drop", "1", TaskDropRequest.create("1"));
     }
 
     @Test
     public void testDropCommand_allTasks_statusRequestSent() {
-        TaskDropRequest expected = new TaskDropRequest.Builder()
-                .setNullableTaskName(null).build();
-        testCommand("drop", "all", expected);
+        testCommand("drop", "all", TaskDropRequest.create());
     }
 
     @Test
@@ -200,9 +183,7 @@ public class CliProcessorTest {
 
     private void testCommand(String command, String taskId, Object
             expectedEvent) {
-        processor.onInit(AppInitEvent.create());
         sendCommand(command, taskId);
-
         assertThat(postEventCaptor.getValue()).isEqualTo(expectedEvent);
     }
 
@@ -215,6 +196,8 @@ public class CliProcessorTest {
 
         in.mark(0);
         in.reset();
+
+        processor.onInit(AppInitEvent.create());
 
         CountDownLatch waitLatch = new CountDownLatch(1);
         cliExecutor.execute(waitLatch::countDown);

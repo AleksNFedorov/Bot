@@ -11,13 +11,13 @@ import java.lang.annotation.Target;
  * Created by Aleks on 11/17/16.
  */
 public class Annotations {
-    @Target({ElementType.FIELD, ElementType.PARAMETER})
+    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
     @BindingAnnotation
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ThreadsCount {
     }
 
-    @Target({ElementType.FIELD, ElementType.PARAMETER})
+    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
     @BindingAnnotation
     @Retention(RetentionPolicy.RUNTIME)
     public @interface TaskConfigFile {
