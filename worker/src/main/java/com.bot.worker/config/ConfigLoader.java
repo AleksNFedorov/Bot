@@ -21,6 +21,7 @@ import java.io.IOException;
 /**
  * Created by Aleks on 11/17/16.
  */
+//TODO consdier to make thread safe
 @Singleton
 @NotThreadSafe
 public class ConfigLoader extends EventBusComponent {
@@ -43,9 +44,11 @@ public class ConfigLoader extends EventBusComponent {
     @Subscribe
     void onConfigReload(TaskConfigReloadRequest reloadEvent) {
         String taskName = reloadEvent.getTaskName().or(Constants.ALL);
+        //TODO replace with create method
         post(new TaskHoldRequest.Builder().setNullableTaskName(reloadEvent
                 .getTaskName().orNull()).build());
         loadTaskConfigs(taskName);
+        //TODO replace with create
         post(new GetStatusRequest.Builder().setNullableTaskName(reloadEvent
                 .getTaskName().orNull()).build());
     }
@@ -59,6 +62,7 @@ public class ConfigLoader extends EventBusComponent {
             logger.info("Total group confings: {}", config.getGroups());
             logger.info("Total non-grouped configs : {}", config.getTasks());
 
+            //TODO flatten map
             config.getGroups().forEach((group) ->
                     group.getTasks().stream().filter((c) -> isValidTaskConfig
                             (taskName, c)).forEach((task) ->
@@ -73,15 +77,18 @@ public class ConfigLoader extends EventBusComponent {
             logger.info("All configs loaded");
 
         } catch (Exception e) {
+            //TODO remove
             postException(e);
         }
     }
 
+    //TODO convert to static
     private boolean isValidTaskConfig(String taskName, XmlTaskConfig config) {
         return Constants.ALL.equals(taskName) || taskName.equals(config
                 .getTaskName());
     }
 
+    //TODO delete method
     private void processTaskConfig(XmlTaskConfig config) {
         processTaskConfig(Constants.NO_GROUP, config);
     }
@@ -89,6 +96,7 @@ public class ConfigLoader extends EventBusComponent {
     private void processTaskConfig(String groupName, XmlTaskConfig task) {
         logger.info("Loading config {}", task);
 
+        //TODO replace with create
         post(new TaskConfigLoadedResponse.Builder()
                 .setGroupName(groupName)
                 .setTaskConfig(task)

@@ -5,6 +5,7 @@ import org.inferred.freebuilder.FreeBuilder;
 /**
  * Created by Aleks on 12/7/16.
  */
+//TODO consider default constructor
 @FreeBuilder
 public interface TaskConfigReloadRequest extends TaskUpdateRequest {
 

@@ -21,6 +21,8 @@ public abstract class EventBusComponent {
         eventBus.post(event);
     }
 
+    //TODO replace SubscriberExceptionHndler
+    //http://google.github.io/guava/releases/snapshot/api/docs/com/google/common/eventbus/SubscriberExceptionHandler.html
     protected void postException(@NotNull Throwable exception) {
 
         eventBus.post(new ExecutionExceptionEvent.Builder()

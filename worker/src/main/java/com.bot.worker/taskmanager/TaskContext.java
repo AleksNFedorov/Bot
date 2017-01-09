@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 /**
  * Created by Aleks on 11/20/16.
  */
+//TODO change visibility
 class TaskContext {
 
     private final TaskConfig config;
@@ -56,6 +57,7 @@ class TaskContext {
         this.status = status;
     }
 
+    //TODO consdier to simplify
     void putOnHold() {
         boolean success = future.cancel(true);
         if (config.isOneTimeTask() && success) {

@@ -38,6 +38,7 @@ public class CliProcessor extends EventBusComponent {
     private static final Logger logger = LoggerFactory.getLogger(CliProcessor
             .class);
 
+    //TODO avoid using executor
     private final Executor executor;
 
     @Inject
@@ -79,6 +80,7 @@ public class CliProcessor extends EventBusComponent {
             }
         }
 
+        //TODO replace with throwing exception
         if (unknownCommand) {
             System.out.println("Unknown command");
             displayHelpMessage();
@@ -91,6 +93,7 @@ public class CliProcessor extends EventBusComponent {
         String taskId = taskOptionValueToParameter(commandLine
                 .getOptionValue(command.name()));
 
+        //TODO replace switch with map
         switch (command) {
             case help:
                 displayHelpMessage();
@@ -116,6 +119,7 @@ public class CliProcessor extends EventBusComponent {
         }
     }
 
+    //TODO refactor name
     private String taskOptionValueToParameter(@Nullable String taskId) {
         if (Constants.ALL.equalsIgnoreCase(taskId)) {
             return null;

@@ -13,13 +13,16 @@ public class CliModule extends AbstractModule {
 
     private final CommandLine commandLine;
 
+    //TODO avoid parameter
     public CliModule(CommandLine options) {
         this.commandLine = options;
     }
 
     protected void configure() {
+        //TODO replace with provider
         bind(Integer.class).annotatedWith(Annotations.ThreadsCount.class)
                 .toInstance(getThreadsCount());
+        //TODO replace with provider
         bind(String.class).annotatedWith(Annotations.TaskConfigFile.class)
                 .toInstance(commandLine.getOptionValue(BootOptions
                         .TASK_CONFIG_FILE_PATH));

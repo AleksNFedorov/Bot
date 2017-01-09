@@ -19,6 +19,8 @@ import java.util.concurrent.ScheduledExecutorService;
 /**
  * Created by Aleks on 11/14/16.
  */
+
+//TODO change executor
 class BotModule extends AbstractModule {
 
     protected void configure() {

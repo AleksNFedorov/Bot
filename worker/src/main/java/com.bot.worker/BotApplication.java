@@ -13,6 +13,8 @@ import javax.inject.Inject;
 /**
  * Created by Aleks on 11/14/16.
  */
+
+//TODO drop class and move functionality to Starter
 public class BotApplication extends EventBusComponent {
 
     private static final Logger logger = LoggerFactory.getLogger

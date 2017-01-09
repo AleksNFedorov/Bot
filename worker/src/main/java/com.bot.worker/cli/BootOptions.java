@@ -15,8 +15,9 @@ public class BootOptions extends Options {
         Option threadsCount = new Option("tc", THREADS_COUNT, false, "Threads" +
                 " count to execute task");
         threadsCount.setType(Integer.class);
+
+        //TODO unify style
         addOption(threadsCount);
-        addOption(new Option("file", TASK_CONFIG_FILE_PATH, true, "Path to " +
-                "file with tasks configuration"));
+        addOption(new Option("file", TASK_CONFIG_FILE_PATH, true, "Path tasks configuration file "));
     }
 }
