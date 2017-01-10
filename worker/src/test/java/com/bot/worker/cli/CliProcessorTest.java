@@ -5,6 +5,7 @@ import com.bot.worker.common.Command;
 import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.*;
 import com.google.common.eventbus.EventBus;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,9 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.NoSuchElementException;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -52,12 +51,9 @@ public class CliProcessorTest {
 
     private byte[] commandBuffer = new byte[20];
 
-    private ExecutorService cliExecutor;
-
     @Before
     public void initTest() {
-        cliExecutor = Executors.newFixedThreadPool(1);
-        processor = new CliProcessor(cliExecutor);
+        processor = new CliProcessor(MoreExecutors.directExecutor());
         processor.setEventBus(eventBus);
         out = new ByteArrayOutputStream(1000);
         in = new ByteArrayInputStream(commandBuffer);
@@ -77,7 +73,6 @@ public class CliProcessorTest {
     public void finishTest() {
         System.setIn(originalIn);
         System.setOut(originalOut);
-        cliExecutor.shutdownNow();
     }
 
     @Test
@@ -139,8 +134,6 @@ public class CliProcessorTest {
 
     @Test
     public void testUnknownCommand_helpMessageDisplayed() {
-        processor.onInit(AppInitEvent.create());
-
         sendCommand("unk" + System.currentTimeMillis(), "");
 
         assertThat(out.toString()).contains("Available commands");
@@ -197,14 +190,9 @@ public class CliProcessorTest {
         in.mark(0);
         in.reset();
 
-        processor.onInit(AppInitEvent.create());
-
-        CountDownLatch waitLatch = new CountDownLatch(1);
-        cliExecutor.execute(waitLatch::countDown);
         try {
-            waitLatch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            processor.onInit(AppInitEvent.create());
+        } catch (NoSuchElementException expected) {
         }
     }
 
