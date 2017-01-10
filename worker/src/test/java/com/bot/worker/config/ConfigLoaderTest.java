@@ -88,10 +88,7 @@ public class ConfigLoaderTest {
         task.setRunInterval(runInterval);
         task.setExecutorId(executorId);
 
-        return new TaskConfigLoadedResponse.Builder()
-                .setGroupName(groupName)
-                .setTaskConfig(task)
-                .build();
+        return TaskConfigLoadedResponse.create(groupName, task);
     }
 
     private static File createTmpConfigFile() throws IOException {
@@ -235,4 +232,6 @@ public class ConfigLoaderTest {
                 taskStatusRequest
         );
     }
+
+
 }
