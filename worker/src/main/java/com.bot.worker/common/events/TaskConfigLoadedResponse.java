@@ -9,6 +9,13 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskConfigLoadedResponse {
 
+    static TaskConfigLoadedResponse create(String groupName, TaskConfig config) {
+        return new TaskConfigLoadedResponse.Builder()
+                .setGroupName(groupName)
+                .setTaskConfig(config)
+                .build();
+    }
+
     TaskConfig getTaskConfig();
 
     String getGroupName();

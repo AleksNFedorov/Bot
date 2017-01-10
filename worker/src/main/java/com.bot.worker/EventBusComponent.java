@@ -13,7 +13,7 @@ import javax.inject.Inject;
 @Guarded
 public abstract class EventBusComponent {
 
-    private EventBus eventBus;
+    private volatile EventBus eventBus;
 
     public abstract String getComponentName();
 

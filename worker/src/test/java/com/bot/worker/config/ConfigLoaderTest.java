@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -15,6 +16,8 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 
 /**
@@ -58,6 +62,9 @@ public class ConfigLoaderTest {
 
     @Rule
     public final MockitoRule mockitoInit = MockitoJUnit.rule();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Mock
     private EventBus eventBus;
@@ -132,7 +139,7 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_fileExists_configLoaded() throws IOException {
+    public void testOnInit_fileExists_configLoaded() throws IOException, JAXBException {
 
         writeContentToFile(CONFIG_CONTENT, configFile);
 
@@ -143,57 +150,45 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_noFile_throwsException() throws IOException {
+    public void testOnInit_noFile_throwsException() throws IOException, JAXBException {
 
-        loader = new ConfigLoader("SomeUnExistingFile_" + System
-                .currentTimeMillis());
+        loader = new ConfigLoader(
+                "SomeUnExistingFile_" + System.currentTimeMillis());
         loader.setEventBus(eventBus);
+        thrown.expect(FileNotFoundException.class);
 
         loader.onInit(AppInitEvent.create());
-
-        assertThat(postEventCaptor.getAllValues()).hasSize(1);
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getComponentName()).isEqualTo(loader.getComponentName());
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getCause()).isInstanceOf(FileNotFoundException.class);
     }
 
     @Test
-    public void testOnInit_brokenFile_throwsException() throws IOException {
+    public void testOnInit_brokenFile_throwsException() throws IOException, JAXBException {
 
         writeContentToFile("Broken content", configFile);
 
-        loader.onInit(AppInitEvent.create());
+        thrown.expect(DataBindingException.class);
+        thrown.expectCause(isA(UnmarshalException.class));
 
-        assertThat(postEventCaptor.getAllValues()).hasSize(1);
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getComponentName()).isEqualTo(loader.getComponentName());
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getCause()).isInstanceOf(DataBindingException.class);
+        loader.onInit(AppInitEvent.create());
     }
 
     @Test
-    public void testOnInit_emptyFile_throwsException() throws IOException {
+    public void testOnInit_emptyFile_throwsException() throws IOException, JAXBException {
+
+        thrown.expect(DataBindingException.class);
+        thrown.expectCause(isA(UnmarshalException.class));
 
         loader.onInit(AppInitEvent.create());
-
-        assertThat(postEventCaptor.getAllValues()).hasSize(1);
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getComponentName()).isEqualTo(loader.getComponentName());
-        assertThat(((ExecutionExceptionEvent) postEventCaptor.getValue())
-                .getCause()).isInstanceOf(DataBindingException.class);
-
     }
 
     @Test
     public void testOnConfigReload_nullTaskName_allTasksLoaded() throws
-            IOException {
+            IOException, JAXBException {
 
-        TaskHoldRequest holdRequest = TaskHoldRequest.create(null);
-        GetStatusRequest taskStatusRequest = GetStatusRequest.create(null);
+        TaskHoldRequest holdRequest = TaskHoldRequest.create();
+        GetStatusRequest taskStatusRequest = GetStatusRequest.create();
         writeContentToFile(CONFIG_CONTENT, configFile);
 
-        loader.onConfigReload(TaskConfigReloadRequest.create(null));
+        loader.onConfigReload(TaskConfigReloadRequest.create());
 
         assertThat(postEventCaptor.getAllValues()).containsExactly(
                 holdRequest,
@@ -206,7 +201,7 @@ public class ConfigLoaderTest {
 
     @Test
     public void testOnConfigReload_unknownTaskName_noTasksLoaded() throws
-            IOException {
+            IOException, JAXBException {
         String unknownTaskName = "SomeUnknownTask_" + System
                 .currentTimeMillis();
 
@@ -223,7 +218,7 @@ public class ConfigLoaderTest {
 
     @Test
     public void testOnConfigReload_knownTaskName_taskConfigLoaded() throws
-            IOException {
+            IOException, JAXBException {
 
         TaskHoldRequest holdRequest = TaskHoldRequest.create
                 (NO_GROUP_TASK2.getTaskConfig().getTaskName());
