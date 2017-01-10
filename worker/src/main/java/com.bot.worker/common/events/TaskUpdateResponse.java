@@ -1,6 +1,6 @@
 package com.bot.worker.common.events;
 
-import com.bot.worker.common.Command;
+import com.bot.worker.cli.Command;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**

@@ -24,7 +24,6 @@
 
     </appender>
 
-
     <root>
         <appender-ref ref="FILE-AUDIT"/>
     </root>

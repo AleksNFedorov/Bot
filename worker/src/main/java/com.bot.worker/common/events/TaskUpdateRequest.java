@@ -5,7 +5,7 @@ import com.google.common.base.Optional;
 /**
  * Created by Aleks on 12/28/2016.
  */
-public interface TaskUpdateRequest {
+interface TaskUpdateRequest {
 
     Optional<String> getTaskName();
 

@@ -26,6 +26,7 @@ public class CliModule extends AbstractModule {
     }
 
     protected void configure() {
+        bind(CliProcessor.class).asEagerSingleton();
     }
 
     @TaskConfigFile

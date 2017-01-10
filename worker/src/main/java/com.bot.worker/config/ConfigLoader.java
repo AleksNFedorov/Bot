@@ -89,9 +89,4 @@ public class ConfigLoader extends EventBusComponent {
         }
     }
 
-    @Override
-    public String getComponentName() {
-        return "ConfigLoader";
-    }
-
 }

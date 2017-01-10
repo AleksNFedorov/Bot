@@ -134,11 +134,14 @@ public class TaskManager extends EventBusComponent {
                         TaskResult.Status.Exception,
                         e.getLocalizedMessage());
 
+                //TODO log exception
+/*
                 post(new ExecutionExceptionEvent.Builder()
                         .setCause(e)
                         .setComponentName(this
                                 .getComponentName())
                         .build());
+*/
             }
 
             processExecutionResult(taskGroup, taskConfig.getTaskName(), result);
@@ -218,13 +221,6 @@ public class TaskManager extends EventBusComponent {
     }
 
     @Subscribe
-    synchronized void onAppStop(StopAppRequest request) {
-        this.onTaskDropEvent(TaskDropRequest.create(null));
-        executorService.shutdownNow();
-        taskExecutor.shutdownNow();
-    }
-
-    @Subscribe
     synchronized void onGetStatusRequest(GetStatusRequest request) {
         List<TaskContext> tasks = getTasksById(request.getTaskName());
 
@@ -254,11 +250,6 @@ public class TaskManager extends EventBusComponent {
         }
 
         return tasks.build();
-    }
-
-    @Override
-    public String getComponentName() {
-        return "TaskManager";
     }
 
 }

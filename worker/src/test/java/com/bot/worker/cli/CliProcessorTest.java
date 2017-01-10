@@ -1,7 +1,6 @@
 package com.bot.worker.cli;
 
 import com.bot.common.TaskResult;
-import com.bot.worker.common.Command;
 import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.*;
 import com.google.common.eventbus.EventBus;

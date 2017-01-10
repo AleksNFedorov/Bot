@@ -1,6 +1,5 @@
 package com.bot.worker.cli;
 
-import com.bot.worker.common.Command;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 

@@ -1,7 +1,6 @@
 package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
-import com.bot.worker.common.Command;
 import com.bot.worker.common.Constants;
 import com.bot.worker.common.events.*;
 import com.google.common.base.MoreObjects;
@@ -151,8 +150,4 @@ public class CliProcessor extends EventBusComponent {
         System.out.println(event.getResultMessage());
     }
 
-    @Override
-    public String getComponentName() {
-        return "Command line processor";
-    }
 }

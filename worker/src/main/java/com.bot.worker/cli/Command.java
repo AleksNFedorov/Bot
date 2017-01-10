@@ -1,9 +1,8 @@
-package com.bot.worker.common;
+package com.bot.worker.cli;
 
 /**
  * Created by Aleks on 11/25/16.
  */
-//TODO move to another package
 public enum Command {
     help("Show this help message", "help"),
     hold("Put task on hold, put 'all' to put on hold all tasks", "hd"),
