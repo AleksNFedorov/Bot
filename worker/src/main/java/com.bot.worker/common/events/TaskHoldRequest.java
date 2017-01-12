@@ -1,5 +1,6 @@
 package com.bot.worker.common.events;
 
+import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
@@ -9,13 +10,13 @@ import org.inferred.freebuilder.FreeBuilder;
 public interface TaskHoldRequest extends TaskUpdateRequest {
 
     static TaskHoldRequest create() {
-        return TaskHoldRequest.create(null);
+        return TaskHoldRequest.create(Constants.ALL);
     }
 
     static TaskHoldRequest create(String taskName) {
         return new TaskHoldRequest
                 .Builder()
-                .setNullableTaskName(taskName)
+                .setTaskName(taskName)
                 .build();
     }
 

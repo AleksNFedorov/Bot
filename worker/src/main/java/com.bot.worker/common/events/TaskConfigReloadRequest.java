@@ -1,5 +1,6 @@
 package com.bot.worker.common.events;
 
+import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
@@ -9,13 +10,13 @@ import org.inferred.freebuilder.FreeBuilder;
 public interface TaskConfigReloadRequest extends TaskUpdateRequest {
 
     static TaskConfigReloadRequest create() {
-        return TaskConfigReloadRequest.create(null);
+        return TaskConfigReloadRequest.create(Constants.ALL);
     }
 
     static TaskConfigReloadRequest create(String taskName) {
         return new TaskConfigReloadRequest
                 .Builder()
-                .setNullableTaskName(taskName)
+                .setTaskName(taskName)
                 .build();
     }
 

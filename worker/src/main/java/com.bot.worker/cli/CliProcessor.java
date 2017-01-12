@@ -1,8 +1,14 @@
 package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
-import com.bot.worker.common.Constants;
-import com.bot.worker.common.events.*;
+import com.bot.worker.common.events.AppInitEvent;
+import com.bot.worker.common.events.GetStatusRequest;
+import com.bot.worker.common.events.GetStatusResponse;
+import com.bot.worker.common.events.TaskConfigReloadRequest;
+import com.bot.worker.common.events.TaskDropRequest;
+import com.bot.worker.common.events.TaskHoldRequest;
+import com.bot.worker.common.events.TaskScheduleRequest;
+import com.bot.worker.common.events.TaskUpdateResponse;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
@@ -42,19 +48,6 @@ public class CliProcessor extends EventBusComponent {
     @Inject
     CliProcessor(Executor executor) {
         this.executor = executor;
-    }
-
-    private static void displayHelpMessage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(" ", "Available commands", new RunOptions(), "",
-                false);
-    }
-
-    private static String getTaskIdFromOptionValue(String taskId) {
-        if (Constants.ALL.equalsIgnoreCase(taskId)) {
-            return null;
-        }
-        return Strings.nullToEmpty(taskId).trim();
     }
 
     @Subscribe
@@ -99,9 +92,9 @@ public class CliProcessor extends EventBusComponent {
     }
 
     private void processOption(Command command, CommandLine commandLine) {
-        logger.info("Processing CLI command [%s]", command.name());
+        logger.info("Processing CLI command [{}]", command.name());
         System.out.println(command.name());
-        String taskId = getTaskIdFromOptionValue(commandLine
+        String taskId = Strings.nullToEmpty(commandLine
                 .getOptionValue(command.name()));
 
         switch (command) {
@@ -148,6 +141,16 @@ public class CliProcessor extends EventBusComponent {
     @Subscribe
     void onTaskUpdateStatus(TaskUpdateResponse event) {
         System.out.println(event.getResultMessage());
+    }
+
+    private static void displayHelpMessage() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(
+                " ",
+                "Available commands",
+                new RunOptions(),
+                "",
+                false);
     }
 
 }

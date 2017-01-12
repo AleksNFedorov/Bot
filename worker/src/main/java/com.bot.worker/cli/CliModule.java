@@ -10,6 +10,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Created by Aleks on 11/14/16.
  */
@@ -27,6 +30,7 @@ public class CliModule extends AbstractModule {
 
     protected void configure() {
         bind(CliProcessor.class).asEagerSingleton();
+        bind(Executor.class).toInstance(Executors.newSingleThreadExecutor());
     }
 
     @TaskConfigFile

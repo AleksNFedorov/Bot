@@ -6,7 +6,7 @@ package com.bot.common;
  * <p>
  * Parametrized with custom config to allow utilize executor specific fields in config.
  */
-public interface ITaskExecutor<C extends TaskConfig> {
+public interface ITaskExecutor {
 
     /**
      * Executor unique identifier.
@@ -24,6 +24,6 @@ public interface ITaskExecutor<C extends TaskConfig> {
      * @param config task config
      * @return task execution result
      */
-    TaskResult executeTask(C config);
+    TaskResult executeTask(TaskConfig config);
 
 }

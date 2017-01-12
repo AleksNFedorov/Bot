@@ -19,7 +19,7 @@ public class TaskResultProcessorDecorator implements ITaskResultProcessor {
     private final ImmutableList<ITaskResultProcessor> processors;
 
     @Inject
-    public TaskResultProcessorDecorator(ImmutableList<ITaskResultProcessor> processors) {
+    TaskResultProcessorDecorator(ImmutableList<ITaskResultProcessor> processors) {
         this.processors = processors;
     }
 

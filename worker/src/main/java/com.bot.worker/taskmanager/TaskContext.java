@@ -9,7 +9,6 @@ import java.util.concurrent.Future;
 /**
  * Created by Aleks on 11/20/16.
  */
-//TODO change visibility
 class TaskContext {
 
     private final TaskConfig config;
@@ -22,18 +21,18 @@ class TaskContext {
 
     private TaskStatus status = TaskStatus.Scheduled;
 
-    public TaskContext(TaskConfig config, String groupName) {
+    TaskContext(TaskConfig config, String groupName) {
         this.config = config;
         this.groupName = groupName;
         setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult
                 .Status.NoStatusYet));
     }
 
-    public String getGroupName() {
+    String getGroupName() {
         return groupName;
     }
 
-    public void setFuture(Future<?> future) {
+    void setFuture(Future<?> future) {
         this.future = future;
     }
 
@@ -49,22 +48,17 @@ class TaskContext {
         this.lastTaskResult = lastTaskResult;
     }
 
-    public TaskStatus getStatus() {
+    TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
+    void setStatus(TaskStatus status) {
         this.status = status;
     }
 
-    //TODO consdier to simplify
     void putOnHold() {
-        boolean success = future.cancel(true);
-        if (config.isOneTimeTask() && success) {
-            setStatus(TaskStatus.Hold);
-        } else if (!config.isOneTimeTask()) {
-            setStatus(TaskStatus.Hold);
-        }
+        future.cancel(true);
+        setStatus(TaskStatus.Hold);
     }
 
     public TaskConfig getConfig() {

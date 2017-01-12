@@ -1,5 +1,6 @@
 package com.bot.worker.common.events;
 
+import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
@@ -9,13 +10,13 @@ import org.inferred.freebuilder.FreeBuilder;
 public interface TaskScheduleRequest extends TaskUpdateRequest {
 
     static TaskScheduleRequest create() {
-        return TaskScheduleRequest.create(null);
+        return TaskScheduleRequest.create(Constants.ALL);
     }
 
     static TaskScheduleRequest create(String taskName) {
         return new TaskScheduleRequest
                 .Builder()
-                .setNullableTaskName(taskName)
+                .setTaskName(taskName)
                 .build();
     }
 

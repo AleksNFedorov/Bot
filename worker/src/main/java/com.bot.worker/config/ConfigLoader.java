@@ -3,7 +3,11 @@ package com.bot.worker.config;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Annotations.TaskConfigFile;
 import com.bot.worker.common.Constants;
-import com.bot.worker.common.events.*;
+import com.bot.worker.common.events.AppInitEvent;
+import com.bot.worker.common.events.GetStatusRequest;
+import com.bot.worker.common.events.TaskConfigLoadedResponse;
+import com.bot.worker.common.events.TaskConfigReloadRequest;
+import com.bot.worker.common.events.TaskHoldRequest;
 import com.bot.worker.config.XmlConfig.XmlTaskConfig;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
@@ -32,11 +36,6 @@ public class ConfigLoader extends EventBusComponent {
         this.pathToConfigFile = pathToConfigFile;
     }
 
-    private static boolean isValidTaskConfig(String taskName, XmlTaskConfig config) {
-        return Constants.ALL.equals(taskName) || taskName.equals(config
-                .getTaskName());
-    }
-
     @Subscribe
     void onInit(AppInitEvent event) throws JAXBException, IOException {
         loadTaskConfigs(Constants.ALL);
@@ -44,11 +43,10 @@ public class ConfigLoader extends EventBusComponent {
 
     @Subscribe
     void onConfigReload(TaskConfigReloadRequest reloadEvent) throws JAXBException, IOException {
-        String origTaskName = reloadEvent.getTaskName().orNull();
-        String taskName = reloadEvent.getTaskName().or(Constants.ALL);
-        post(TaskHoldRequest.create(origTaskName));
+        String taskName = reloadEvent.getTaskName();
+        post(TaskHoldRequest.create(taskName));
         loadTaskConfigs(taskName);
-        post(GetStatusRequest.create(origTaskName));
+        post(GetStatusRequest.create(taskName));
     }
 
     private void loadTaskConfigs(String taskName) throws JAXBException, IOException {
@@ -87,6 +85,11 @@ public class ConfigLoader extends EventBusComponent {
                      new BufferedInputStream(new FileInputStream(pathToConfigFile))) {
             return JAXB.unmarshal(configStream, XmlConfig.class);
         }
+    }
+
+    private static boolean isValidTaskConfig(String taskName, XmlTaskConfig config) {
+        return Constants.ALL.equals(taskName) || taskName.equals(config
+                .getTaskName());
     }
 
 }
