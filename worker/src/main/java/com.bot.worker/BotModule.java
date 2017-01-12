@@ -1,7 +1,7 @@
 package com.bot.worker;
 
-import com.bot.common.ITaskExecutor;
-import com.bot.common.ITaskResultProcessor;
+import com.bot.common.TaskExecutor;
+import com.bot.common.TaskResultProcessor;
 import com.bot.worker.config.ConfigLoader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
@@ -25,14 +25,16 @@ class BotModule extends AbstractModule {
         bind(ConfigLoader.class).asEagerSingleton();
     }
 
+    @Singleton
     @Provides
-    ImmutableList<ITaskExecutor> provideTaskExecutors() {
-        return ImmutableList.copyOf(ServiceLoader.load(ITaskExecutor.class).iterator());
+    ImmutableList<TaskExecutor> provideTaskExecutors() {
+        return ImmutableList.copyOf(ServiceLoader.load(TaskExecutor.class).iterator());
     }
 
+    @Singleton
     @Provides
-    ImmutableList<ITaskResultProcessor> provideResultProcessors() {
-        return ImmutableList.copyOf(ServiceLoader.load(ITaskResultProcessor.class).iterator());
+    ImmutableList<TaskResultProcessor> provideResultProcessors() {
+        return ImmutableList.copyOf(ServiceLoader.load(TaskResultProcessor.class).iterator());
     }
 
     @Singleton

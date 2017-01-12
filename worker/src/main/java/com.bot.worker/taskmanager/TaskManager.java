@@ -1,9 +1,9 @@
 package com.bot.worker.taskmanager;
 
-import com.bot.common.ITaskExecutor;
-import com.bot.common.ITaskResultProcessor;
 import com.bot.common.TaskConfig;
+import com.bot.common.TaskExecutor;
 import com.bot.common.TaskResult;
+import com.bot.common.TaskResultProcessor;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Constants;
 import com.bot.worker.common.TaskStatus;
@@ -51,19 +51,19 @@ public class TaskManager extends EventBusComponent {
             Ordering.natural(),
             Comparator.comparing(TaskResult::getTaskName));
 
-    private final Map<String, ITaskExecutor> taskExecutors;
-    private final ITaskResultProcessor resultProcessor;
+    private final Map<String, TaskExecutor> taskExecutors;
+    private final TaskResultProcessor resultProcessor;
 
     @Inject
     TaskManager(ScheduledExecutorService executorService,
-                ImmutableList<ITaskExecutor> executors,
-                ImmutableList<ITaskResultProcessor> resultProcessors) {
+                ImmutableList<TaskExecutor> executors,
+                ImmutableList<TaskResultProcessor> resultProcessors) {
 
         this.executorService = executorService;
         this.taskExecutor = Executors.newCachedThreadPool();
         this.taskExecutors = executors
                 .stream()
-                .collect(Collectors.toMap(ITaskExecutor::getId, x -> x));
+                .collect(Collectors.toMap(TaskExecutor::getId, x -> x));
         this.resultProcessor = new TaskResultProcessorDecorator(resultProcessors);
     }
 
@@ -92,7 +92,7 @@ public class TaskManager extends EventBusComponent {
     private Runnable createTaskRunnable(TaskContext taskContext) {
 
         final TaskConfig taskConfig = taskContext.getConfig();
-        final ITaskExecutor executor = taskExecutors.get(taskConfig.getExecutorId());
+        final TaskExecutor executor = taskExecutors.get(taskConfig.getExecutorId());
         long deadline = taskConfig.getDeadline();
 
         return () -> {

@@ -1,9 +1,9 @@
 package com.bot.worker.taskmanager;
 
-import com.bot.common.ITaskExecutor;
-import com.bot.common.ITaskResultProcessor;
 import com.bot.common.TaskConfig;
+import com.bot.common.TaskExecutor;
 import com.bot.common.TaskResult;
+import com.bot.common.TaskResultProcessor;
 import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.GetStatusRequest;
 import com.bot.worker.common.events.GetStatusResponse;
@@ -53,7 +53,7 @@ public class TaskManagerTest {
     private EventBus eventBus;
 
     @Mock
-    private ITaskResultProcessor resultProcessor;
+    private TaskResultProcessor resultProcessor;
 
     @Captor
     private ArgumentCaptor eventBusPostCaptor;
@@ -64,7 +64,7 @@ public class TaskManagerTest {
     @Captor
     private ArgumentCaptor<List<TaskResult>> groupResultProcessorCaptor;
 
-    private ITaskExecutor executor;
+    private TaskExecutor executor;
 
     private TaskManager taskManager;
 
@@ -482,7 +482,7 @@ public class TaskManagerTest {
         }
     }
 
-    private static class TestExecutor implements ITaskExecutor {
+    private static class TestExecutor implements TaskExecutor {
 
         private static final String TASK_EXECUTOR_ID = "ExecutorID";
 

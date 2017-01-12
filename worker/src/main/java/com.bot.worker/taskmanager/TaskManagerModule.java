@@ -1,13 +1,9 @@
 package com.bot.worker.taskmanager;
 
-import com.bot.common.ITaskExecutor;
-import com.bot.common.ITaskResultProcessor;
 import com.bot.worker.common.Annotations;
-import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.TypeLiteral;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,10 +18,6 @@ public class TaskManagerModule extends AbstractModule {
     protected void configure() {
         requireBinding(EventBus.class);
         bind(TaskManager.class).asEagerSingleton();
-        requireBinding(new TypeLiteral<ImmutableList<ITaskExecutor>>() {
-        }.getRawType());
-        requireBinding(new TypeLiteral<ImmutableList<ITaskResultProcessor>>() {
-        }.getRawType());
     }
 
     @Provides

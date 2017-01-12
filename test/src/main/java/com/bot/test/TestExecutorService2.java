@@ -1,15 +1,17 @@
 package com.bot.test;
 
-import com.bot.common.ITaskExecutor;
 import com.bot.common.TaskConfig;
+import com.bot.common.TaskExecutor;
 import com.bot.common.TaskResult;
+import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Created by Aleks on 11/23/16.
  */
-public class TestExecutorService2 implements ITaskExecutor {
+@AutoService(TaskExecutor.class)
+public class TestExecutorService2 implements TaskExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(TestExecutorService2.class);
 

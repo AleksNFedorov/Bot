@@ -6,7 +6,7 @@ package com.bot.common;
  * <p>
  * Parametrized with custom config to allow utilize executor specific fields in config.
  */
-public interface ITaskExecutor {
+public interface TaskExecutor {
 
     /**
      * Executor unique identifier.

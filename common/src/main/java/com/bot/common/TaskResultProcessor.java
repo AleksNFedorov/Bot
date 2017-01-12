@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Aleks on 11/20/16.
  */
-public interface ITaskResultProcessor {
+public interface TaskResultProcessor {
 
     void processResult(TaskResult result, List<TaskResult> groupResults);
 
