@@ -1,22 +1,28 @@
 package com.bot.worker.cli;
 
 import com.bot.worker.EventBusComponent;
-import com.bot.worker.common.events.*;
+import com.bot.worker.common.events.AppInitEvent;
+import com.bot.worker.common.events.GetStatusRequest;
+import com.bot.worker.common.events.GetStatusResponse;
+import com.bot.worker.common.events.TaskConfigReloadRequest;
+import com.bot.worker.common.events.TaskDropRequest;
+import com.bot.worker.common.events.TaskHoldRequest;
+import com.bot.worker.common.events.TaskScheduleRequest;
+import com.bot.worker.common.events.TaskUpdateResponse;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+import java.util.concurrent.Executor;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
-import java.util.concurrent.Executor;
 
 /**
  * Created by Aleks on 11/25/16.
@@ -90,7 +96,8 @@ public class CliProcessor extends EventBusComponent {
         }
 
         if (unknownCommand) {
-            throw new IllegalArgumentException(String.format("Unable to process command: [%s]", commandLineString));
+            throw new IllegalArgumentException(
+                    String.format("Unable to process command: [%s]", commandLineString));
         }
     }
 

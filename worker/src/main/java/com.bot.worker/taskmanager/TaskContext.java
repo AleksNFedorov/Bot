@@ -3,7 +3,6 @@ package com.bot.worker.taskmanager;
 import com.bot.common.TaskConfig;
 import com.bot.common.TaskResult;
 import com.bot.worker.common.TaskStatus;
-
 import java.util.concurrent.Future;
 
 /**
@@ -11,57 +10,57 @@ import java.util.concurrent.Future;
  */
 class TaskContext {
 
-    private final TaskConfig config;
+  private final TaskConfig config;
 
-    private final String groupName;
+  private final String groupName;
 
-    private Future<?> future;
+  private Future<?> future;
 
-    private TaskResult lastTaskResult;
+  private TaskResult lastTaskResult;
 
-    private TaskStatus status = TaskStatus.Scheduled;
+  private TaskStatus status = TaskStatus.Scheduled;
 
-    TaskContext(TaskConfig config, String groupName) {
-        this.config = config;
-        this.groupName = groupName;
-        setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult
-                .Status.NoStatusYet));
-    }
+  TaskContext(TaskConfig config, String groupName) {
+    this.config = config;
+    this.groupName = groupName;
+    setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult
+        .Status.NoStatusYet));
+  }
 
-    String getGroupName() {
-        return groupName;
-    }
+  String getGroupName() {
+    return groupName;
+  }
 
-    void setFuture(Future<?> future) {
-        this.future = future;
-    }
+  void setFuture(Future<?> future) {
+    this.future = future;
+  }
 
-    String getTaskName() {
-        return config.getTaskName();
-    }
+  String getTaskName() {
+    return config.getTaskName();
+  }
 
-    TaskResult getLastTaskResult() {
-        return lastTaskResult;
-    }
+  TaskResult getLastTaskResult() {
+    return lastTaskResult;
+  }
 
-    void setLastTaskResult(TaskResult lastTaskResult) {
-        this.lastTaskResult = lastTaskResult;
-    }
+  void setLastTaskResult(TaskResult lastTaskResult) {
+    this.lastTaskResult = lastTaskResult;
+  }
 
-    TaskStatus getStatus() {
-        return status;
-    }
+  TaskStatus getStatus() {
+    return status;
+  }
 
-    void setStatus(TaskStatus status) {
-        this.status = status;
-    }
+  void setStatus(TaskStatus status) {
+    this.status = status;
+  }
 
-    void putOnHold() {
-        future.cancel(true);
-        setStatus(TaskStatus.Hold);
-    }
+  void putOnHold() {
+    future.cancel(true);
+    setStatus(TaskStatus.Hold);
+  }
 
-    public TaskConfig getConfig() {
-        return config;
-    }
+  public TaskConfig getConfig() {
+    return config;
+  }
 }

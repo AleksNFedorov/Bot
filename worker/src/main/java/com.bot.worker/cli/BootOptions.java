@@ -8,24 +8,24 @@ import org.apache.commons.cli.Options;
  */
 class BootOptions extends Options {
 
-    static final String THREADS_COUNT = "threads-count";
-    static final String TASK_CONFIG_FILE_PATH = "task-config-file";
+  static final String THREADS_COUNT = "threads-count";
+  static final String TASK_CONFIG_FILE_PATH = "task-config-file";
 
-    BootOptions() {
-        addOption(Option
-                .builder("tc")
-                .longOpt(THREADS_COUNT)
-                .desc("Task execution thread pool size")
-                .hasArg()
-                .type(Integer.class)
-                .build());
+  BootOptions() {
+    addOption(Option
+        .builder("tc")
+        .longOpt(THREADS_COUNT)
+        .desc("Task execution thread pool size")
+        .hasArg()
+        .type(Integer.class)
+        .build());
 
-        addOption(Option
-                .builder("config")
-                .longOpt(TASK_CONFIG_FILE_PATH)
-                .desc("Path to configuration file")
-                .hasArg()
-                .type(String.class)
-                .build());
-    }
+    addOption(Option
+        .builder("config")
+        .longOpt(TASK_CONFIG_FILE_PATH)
+        .desc("Path to configuration file")
+        .hasArg()
+        .type(String.class)
+        .build());
+  }
 }

@@ -9,45 +9,49 @@ import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import java.util.ServiceLoader;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Singleton;
-import java.util.ServiceLoader;
 
 /**
  * Created by Aleks on 11/14/16.
  */
-
 class BotModule extends AbstractModule {
 
-    protected void configure() {
-        bind(ConfigLoader.class).asEagerSingleton();
-    }
+  protected void configure() {
+    bind(ConfigLoader.class).asEagerSingleton();
+  }
 
-    @Singleton
-    @Provides
-    ImmutableList<TaskExecutor> provideTaskExecutors() {
-        return ImmutableList.copyOf(ServiceLoader.load(TaskExecutor.class).iterator());
-    }
+  @Singleton
+  @Provides
+  ImmutableList<TaskExecutor> provideTaskExecutors() {
+    return ImmutableList.copyOf(
+        ServiceLoader
+            .load(TaskExecutor.class)
+            .iterator());
+  }
 
-    @Singleton
-    @Provides
-    ImmutableList<TaskResultProcessor> provideResultProcessors() {
-        return ImmutableList.copyOf(ServiceLoader.load(TaskResultProcessor.class).iterator());
-    }
+  @Singleton
+  @Provides
+  ImmutableList<TaskResultProcessor> provideResultProcessors() {
+    return ImmutableList.copyOf(ServiceLoader.load(
+        TaskResultProcessor.class).iterator());
+  }
 
-    @Singleton
-    @Provides
-    EventBus provideEventBus() {
-        return new EventBus(new SubscriberExceptionHandler() {
+  @Singleton
+  @Provides
+  EventBus provideEventBus() {
+    return new EventBus(new SubscriberExceptionHandler() {
 
-            private final Logger logger = LoggerFactory.getLogger("ExceptionLogger");
+      private final Logger logger = LoggerFactory.getLogger("ExceptionLogger");
 
-            @Override
-            public void handleException(Throwable exception, SubscriberExceptionContext context) {
-                logger.error("Exception", exception);
-            }
-        });
-    }
+      @Override
+      public void handleException(final Throwable exception,
+          final SubscriberExceptionContext context) {
+
+        logger.error("Exception", exception);
+      }
+    });
+  }
 }

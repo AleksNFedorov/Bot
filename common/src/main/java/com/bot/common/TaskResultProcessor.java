@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface TaskResultProcessor {
 
-    void processResult(TaskResult result, List<TaskResult> groupResults);
+  void processResult(TaskResult result, List<TaskResult> groupResults);
 
 }

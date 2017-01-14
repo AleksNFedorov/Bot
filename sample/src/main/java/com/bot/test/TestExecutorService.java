@@ -13,16 +13,16 @@ import org.slf4j.LoggerFactory;
 @AutoService(TaskExecutor.class)
 public class TestExecutorService implements TaskExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestExecutorService.class);
+  private static final Logger logger = LoggerFactory.getLogger(TestExecutorService.class);
 
-    public String getId() {
-        return "testExecutor";
-    }
+  public String getId() {
+    return "testExecutor";
+  }
 
-    public TaskResult executeTask(TaskConfig config) {
-        logger.info("Executing task in " + getId());
-        return new TaskResult(config.getTaskName(), TaskResult.Status.Success, "Test execution " +
-                "success");
+  public TaskResult executeTask(TaskConfig config) {
+    logger.info("Executing task in " + getId());
+    return new TaskResult(config.getTaskName(), TaskResult.Status.Success, "Test execution " +
+        "success");
 
-    }
+  }
 }

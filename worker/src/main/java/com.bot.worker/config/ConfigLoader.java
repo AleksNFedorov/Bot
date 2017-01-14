@@ -3,19 +3,22 @@ package com.bot.worker.config;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Annotations.TaskConfigFile;
 import com.bot.worker.common.Constants;
-import com.bot.worker.common.events.*;
+import com.bot.worker.common.events.AppInitEvent;
+import com.bot.worker.common.events.GetStatusRequest;
+import com.bot.worker.common.events.TaskConfigLoadedResponse;
+import com.bot.worker.common.events.TaskConfigReloadRequest;
+import com.bot.worker.common.events.TaskHoldRequest;
 import com.bot.worker.config.XmlConfig.XmlTaskConfig;
 import com.google.common.eventbus.Subscribe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Aleks on 11/17/16.
@@ -84,7 +87,7 @@ public class ConfigLoader extends EventBusComponent {
 
     private XmlConfig parseConfig() throws JAXBException, IOException {
         try (BufferedInputStream configStream =
-                     new BufferedInputStream(new FileInputStream(pathToConfigFile))) {
+                new BufferedInputStream(new FileInputStream(pathToConfigFile))) {
             return JAXB.unmarshal(configStream, XmlConfig.class);
         }
     }

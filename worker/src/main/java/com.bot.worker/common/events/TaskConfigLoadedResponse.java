@@ -9,17 +9,18 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskConfigLoadedResponse {
 
-    static TaskConfigLoadedResponse create(String groupName, TaskConfig config) {
-        return new TaskConfigLoadedResponse.Builder()
-                .setGroupName(groupName)
-                .setTaskConfig(config)
-                .build();
-    }
+  static TaskConfigLoadedResponse create(String groupName, TaskConfig config) {
+    return new TaskConfigLoadedResponse.Builder()
+        .setGroupName(groupName)
+        .setTaskConfig(config)
+        .build();
+  }
 
-    TaskConfig getTaskConfig();
+  TaskConfig getTaskConfig();
 
-    String getGroupName();
+  String getGroupName();
 
-    class Builder extends TaskConfigLoadedResponse_Builder {
-    }
+  class Builder extends TaskConfigLoadedResponse_Builder {
+
+  }
 }

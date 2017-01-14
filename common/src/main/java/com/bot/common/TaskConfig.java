@@ -12,36 +12,36 @@ import java.util.Map;
  */
 public class TaskConfig {
 
-    public static final long ONE_TIME_TASK = -1;
+  public static final long ONE_TIME_TASK = -1;
 
-    protected String taskName;
+  protected String taskName;
 
-    protected String executorId;
+  protected String executorId;
 
-    protected long runInterval;
+  protected long runInterval;
 
-    protected long deadline = 30;
+  protected long deadline = 30;
 
-    protected Map<String, String> config;
+  protected Map<String, String> config;
 
-    public String getTaskName() {
-        return taskName;
-    }
+  public String getTaskName() {
+    return taskName;
+  }
 
-    public String getExecutorId() {
-        return executorId;
-    }
+  public String getExecutorId() {
+    return executorId;
+  }
 
-    public long getRunInterval() {
-        return runInterval;
-    }
+  public long getRunInterval() {
+    return runInterval;
+  }
 
-    public long getDeadline() {
-        return deadline;
-    }
+  public long getDeadline() {
+    return deadline;
+  }
 
-    public boolean isOneTimeTask() {
-        return runInterval == ONE_TIME_TASK;
-    }
+  public boolean isOneTimeTask() {
+    return runInterval == ONE_TIME_TASK;
+  }
 
 }

@@ -9,17 +9,18 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskHoldRequest extends TaskUpdateRequest {
 
-    static TaskHoldRequest create() {
-        return TaskHoldRequest.create(Constants.ALL);
-    }
+  static TaskHoldRequest create() {
+    return TaskHoldRequest.create(Constants.ALL);
+  }
 
-    static TaskHoldRequest create(String taskName) {
-        return new TaskHoldRequest
-                .Builder()
-                .setTaskName(taskName)
-                .build();
-    }
+  static TaskHoldRequest create(String taskName) {
+    return new TaskHoldRequest
+        .Builder()
+        .setTaskName(taskName)
+        .build();
+  }
 
-    class Builder extends TaskHoldRequest_Builder {
-    }
+  class Builder extends TaskHoldRequest_Builder {
+
+  }
 }

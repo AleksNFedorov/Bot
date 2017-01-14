@@ -9,17 +9,18 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface GetStatusRequest extends TaskUpdateRequest {
 
-    static GetStatusRequest create() {
-        return GetStatusRequest.create(Constants.ALL);
-    }
+  static GetStatusRequest create() {
+    return GetStatusRequest.create(Constants.ALL);
+  }
 
-    static GetStatusRequest create(String taskName) {
-        return new GetStatusRequest
-                .Builder()
-                .setTaskName(taskName)
-                .build();
-    }
+  static GetStatusRequest create(String taskName) {
+    return new GetStatusRequest
+        .Builder()
+        .setTaskName(taskName)
+        .build();
+  }
 
-    class Builder extends GetStatusRequest_Builder {
-    }
+  class Builder extends GetStatusRequest_Builder {
+
+  }
 }

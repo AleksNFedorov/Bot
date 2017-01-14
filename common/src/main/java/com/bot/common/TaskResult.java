@@ -1,15 +1,14 @@
 package com.bot.common;
 
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Task execution result.
@@ -52,8 +51,12 @@ public class TaskResult {
     @Override
     public boolean equals(Object o) {
 
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final TaskResult result = (TaskResult) o;
 
         return Objects.equal(taskName, result.taskName)

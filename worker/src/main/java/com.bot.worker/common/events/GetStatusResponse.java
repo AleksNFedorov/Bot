@@ -3,9 +3,8 @@ package com.bot.worker.common.events;
 import com.bot.common.TaskResult;
 import com.bot.worker.common.TaskStatus;
 import com.google.common.collect.ImmutableList;
-import org.inferred.freebuilder.FreeBuilder;
-
 import java.time.LocalDateTime;
+import org.inferred.freebuilder.FreeBuilder;
 
 /**
  * Created by Aleks on 12/4/16.
@@ -13,23 +12,25 @@ import java.time.LocalDateTime;
 @FreeBuilder
 public interface GetStatusResponse {
 
-    ImmutableList<TaskInfo> getTasksInfo();
+  ImmutableList<TaskInfo> getTasksInfo();
 
-    @FreeBuilder
-    interface TaskInfo {
+  @FreeBuilder
+  interface TaskInfo {
 
-        String getTaskName();
+    String getTaskName();
 
-        TaskStatus getStatus();
+    TaskStatus getStatus();
 
-        TaskResult.Status getResultStatus();
+    TaskResult.Status getResultStatus();
 
-        LocalDateTime getResultTimestamp();
+    LocalDateTime getResultTimestamp();
 
-        class Builder extends GetStatusResponse_TaskInfo_Builder {
-        }
+    class Builder extends GetStatusResponse_TaskInfo_Builder {
+
     }
+  }
 
-    class Builder extends GetStatusResponse_Builder {
-    }
+  class Builder extends GetStatusResponse_Builder {
+
+  }
 }

@@ -9,12 +9,13 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskUpdateResponse {
 
-    Command getCommand();
+  Command getCommand();
 
-    String getTaskName();
+  String getTaskName();
 
-    String getResultMessage();
+  String getResultMessage();
 
-    class Builder extends TaskUpdateResponse_Builder {
-    }
+  class Builder extends TaskUpdateResponse_Builder {
+
+  }
 }

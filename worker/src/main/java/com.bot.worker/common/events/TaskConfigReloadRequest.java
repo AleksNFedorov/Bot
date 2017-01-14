@@ -9,17 +9,18 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface TaskConfigReloadRequest extends TaskUpdateRequest {
 
-    static TaskConfigReloadRequest create() {
-        return TaskConfigReloadRequest.create(Constants.ALL);
-    }
+  static TaskConfigReloadRequest create() {
+    return TaskConfigReloadRequest.create(Constants.ALL);
+  }
 
-    static TaskConfigReloadRequest create(String taskName) {
-        return new TaskConfigReloadRequest
-                .Builder()
-                .setTaskName(taskName)
-                .build();
-    }
+  static TaskConfigReloadRequest create(String taskName) {
+    return new TaskConfigReloadRequest
+        .Builder()
+        .setTaskName(taskName)
+        .build();
+  }
 
-    class Builder extends TaskConfigReloadRequest_Builder {
-    }
+  class Builder extends TaskConfigReloadRequest_Builder {
+
+  }
 }

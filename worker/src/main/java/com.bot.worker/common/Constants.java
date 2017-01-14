@@ -5,7 +5,7 @@ package com.bot.worker.common;
  */
 public interface Constants {
 
-    String ALL = "all";
-    String NO_GROUP = "";
+  String ALL = "all";
+  String NO_GROUP = "";
 
 }

@@ -5,6 +5,6 @@ package com.bot.worker.common.events;
  */
 interface TaskUpdateRequest {
 
-    String getTaskName();
+  String getTaskName();
 
 }

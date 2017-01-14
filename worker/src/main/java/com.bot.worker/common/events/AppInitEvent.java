@@ -8,10 +8,11 @@ import org.inferred.freebuilder.FreeBuilder;
 @FreeBuilder
 public interface AppInitEvent {
 
-    static AppInitEvent create() {
-        return new AppInitEvent.Builder().build();
-    }
+  static AppInitEvent create() {
+    return new AppInitEvent.Builder().build();
+  }
 
-    class Builder extends AppInitEvent_Builder {
-    }
+  class Builder extends AppInitEvent_Builder {
+
+  }
 }
