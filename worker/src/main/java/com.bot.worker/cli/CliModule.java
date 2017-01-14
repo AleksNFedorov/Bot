@@ -23,7 +23,9 @@ public class CliModule extends AbstractModule {
 
     private final CommandLine commandLine;
 
-    public CliModule(@NotNull String[] commandLineArguments) throws ParseException {
+    public CliModule(@NotNull final String[] commandLineArguments)
+            throws ParseException {
+
         commandLine = new DefaultParser().parse(new
                 BootOptions(), commandLineArguments);
     }
