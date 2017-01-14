@@ -7,12 +7,7 @@ import com.bot.common.TaskResultProcessor;
 import com.bot.worker.EventBusComponent;
 import com.bot.worker.common.Constants;
 import com.bot.worker.common.TaskStatus;
-import com.bot.worker.common.events.GetStatusRequest;
-import com.bot.worker.common.events.GetStatusResponse;
-import com.bot.worker.common.events.TaskConfigLoadedResponse;
-import com.bot.worker.common.events.TaskDropRequest;
-import com.bot.worker.common.events.TaskHoldRequest;
-import com.bot.worker.common.events.TaskScheduleRequest;
+import com.bot.worker.common.events.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Ordering;
@@ -29,11 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +56,20 @@ public class TaskManager extends EventBusComponent {
                 .stream()
                 .collect(Collectors.toMap(TaskExecutor::getId, x -> x));
         this.resultProcessor = new TaskResultProcessorDecorator(resultProcessors);
+    }
+
+    private static TaskStatus getNewTaskStatus(TaskContext context) {
+        TaskStatus newStatus = TaskStatus.Unknown;
+        switch (context.getStatus()) {
+            case Running:
+                newStatus = context.getConfig().isOneTimeTask() ?
+                        TaskStatus.Finished : TaskStatus.Scheduled;
+                break;
+            case Hold:
+                newStatus = TaskStatus.Hold;
+                break;
+        }
+        return newStatus;
     }
 
     @Subscribe
@@ -120,7 +125,8 @@ public class TaskManager extends EventBusComponent {
         };
     }
 
-    private void processExecutionResult(TaskContext context, TaskResult result) {
+    private synchronized void processExecutionResult(TaskContext context,
+                                                     TaskResult result) {
         final String groupName = context.getGroupName();
         groupResults.remove(groupName, result);
         groupResults.put(groupName, result);
@@ -216,19 +222,5 @@ public class TaskManager extends EventBusComponent {
         }
 
         return tasks.build();
-    }
-
-    private static TaskStatus getNewTaskStatus(TaskContext context) {
-        TaskStatus newStatus = TaskStatus.Unknown;
-        switch (context.getStatus()) {
-            case Running:
-                newStatus = context.getConfig().isOneTimeTask() ?
-                        TaskStatus.Finished : TaskStatus.Scheduled;
-                break;
-            case Hold:
-                newStatus = TaskStatus.Hold;
-                break;
-        }
-        return newStatus;
     }
 }

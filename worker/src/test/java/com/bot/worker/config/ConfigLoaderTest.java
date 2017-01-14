@@ -49,15 +49,26 @@ public class ConfigLoaderTest {
             "        <deadline>1</deadline>" +
             "    </task>" +
             "</config>";
+
     private static final TaskConfigLoadedResponse GROUP1_TASK1 =
             createResponse("group1",
-                    "g1_task_1", "executor 1", 10L, 3L);
+                    "g1_task_1",
+                    "executor 1",
+                    10L,
+                    3L);
     private static final TaskConfigLoadedResponse GROUP1_TASK2 =
             createResponse("group1",
-                    "g1_task_2", "executor 1", 14L, 8L);
+                    "g1_task_2",
+                    "executor 1",
+                    14L,
+                    8L);
     private static final TaskConfigLoadedResponse NO_GROUP_TASK2 =
             createResponse("",
-                    "task_2", "testExecutor", 2L, 1L);
+                    "task_2",
+                    "testExecutor",
+                    2L,
+                    1L);
+
     private static int fileSequence = 0;
 
     @Rule
@@ -92,15 +103,16 @@ public class ConfigLoaderTest {
     }
 
     private static File createTmpConfigFile() throws IOException {
-        File configFile = new File("./", String.format
-                ("configLoaderTest_%d_%d" +
-                                ".xml",
+
+        File configFile = new File("./",
+                String.format("configLoaderTest_%d_%d.xml",
                         System.currentTimeMillis(),
                         fileSequence++));
 
         if (!configFile.createNewFile()) {
-            throw new IOException(String.format("Unable to create new file: " +
-                    "[%s]", configFile.getName()));
+            throw new IOException(
+                    String.format("Unable to create new file: [%s]",
+                            configFile.getName()));
         }
 
         configFile.deleteOnExit();
@@ -108,13 +120,12 @@ public class ConfigLoaderTest {
         return configFile;
     }
 
-    private static void writeContentToFile(String content, File dst) throws
-            IOException {
+    private static void writeContentToFile(String content, File dst)
+            throws IOException {
 
         Writer stream = Files.asCharSink(dst,
                 StandardCharsets.UTF_8,
-                FileWriteMode
-                        .APPEND).openBufferedStream();
+                FileWriteMode.APPEND).openBufferedStream();
 
         stream.write(content);
         stream.close();
@@ -122,6 +133,7 @@ public class ConfigLoaderTest {
 
     @Before
     public void setUp() throws IOException {
+
         doNothing().when(eventBus).post(postEventCaptor.capture());
 
         configFile = createTmpConfigFile();
@@ -136,7 +148,8 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_fileExists_configLoaded() throws IOException, JAXBException {
+    public void testOnInit_fileExists_configLoaded()
+            throws IOException, JAXBException {
 
         writeContentToFile(CONFIG_CONTENT, configFile);
 
@@ -147,10 +160,11 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_noFile_throwsException() throws IOException, JAXBException {
+    public void testOnInit_noFile_throwsException()
+            throws IOException, JAXBException {
 
-        loader = new ConfigLoader(
-                "SomeUnExistingFile_" + System.currentTimeMillis());
+        loader = new ConfigLoader("SomeUnExistingFile_"
+                + System.currentTimeMillis());
         loader.setEventBus(eventBus);
         thrown.expect(FileNotFoundException.class);
 
@@ -158,7 +172,8 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_brokenFile_throwsException() throws IOException, JAXBException {
+    public void testOnInit_brokenFile_throwsException()
+            throws IOException, JAXBException {
 
         writeContentToFile("Broken content", configFile);
 
@@ -169,7 +184,8 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnInit_emptyFile_throwsException() throws IOException, JAXBException {
+    public void testOnInit_emptyFile_throwsException()
+            throws IOException, JAXBException {
 
         thrown.expect(DataBindingException.class);
         thrown.expectCause(isA(UnmarshalException.class));
@@ -178,8 +194,8 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnConfigReload_nullTaskName_allTasksLoaded() throws
-            IOException, JAXBException {
+    public void testOnConfigReload_nullTaskName_allTasksLoaded()
+            throws IOException, JAXBException {
 
         TaskHoldRequest holdRequest = TaskHoldRequest.create();
         GetStatusRequest taskStatusRequest = GetStatusRequest.create();
@@ -197,10 +213,11 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnConfigReload_unknownTaskName_noTasksLoaded() throws
-            IOException, JAXBException {
-        String unknownTaskName = "SomeUnknownTask_" + System
-                .currentTimeMillis();
+    public void testOnConfigReload_unknownTaskName_noTasksLoaded()
+            throws IOException, JAXBException {
+
+        String unknownTaskName = "SomeUnknownTask_"
+                + System.currentTimeMillis();
 
         TaskHoldRequest holdRequest = TaskHoldRequest.create(unknownTaskName);
         GetStatusRequest taskStatusRequest = GetStatusRequest.create
@@ -214,8 +231,8 @@ public class ConfigLoaderTest {
     }
 
     @Test
-    public void testOnConfigReload_knownTaskName_taskConfigLoaded() throws
-            IOException, JAXBException {
+    public void testOnConfigReload_knownTaskName_taskConfigLoaded()
+            throws IOException, JAXBException {
 
         TaskHoldRequest holdRequest = TaskHoldRequest.create
                 (NO_GROUP_TASK2.getTaskConfig().getTaskName());
@@ -232,6 +249,4 @@ public class ConfigLoaderTest {
                 taskStatusRequest
         );
     }
-
-
 }

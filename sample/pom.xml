@@ -3,14 +3,28 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
-    <artifactId>test</artifactId>
+    <artifactId>sample</artifactId>
     <groupId>com.bot</groupId>
     <version>1.0-SNAPSHOT</version>
 
     <modelVersion>4.0.0</modelVersion>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0-rc2</version>
+        </dependency>
+
         <dependency>
             <groupId>com.bot</groupId>
             <artifactId>common</artifactId>
@@ -22,24 +36,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.2</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.auto.service/auto-service -->
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
     </dependencies>
-
-
-    <build>
-        <plugins>
-            <!-- Make this jar executable -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

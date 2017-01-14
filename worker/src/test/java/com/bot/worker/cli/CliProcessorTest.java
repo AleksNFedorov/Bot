@@ -52,6 +52,7 @@ public class CliProcessorTest {
 
     @Before
     public void initTest() {
+
         processor = new CliProcessor(MoreExecutors.directExecutor());
         processor.setEventBus(eventBus);
         out = new ByteArrayOutputStream(1000);
@@ -70,12 +71,14 @@ public class CliProcessorTest {
 
     @After
     public void finishTest() {
+
         System.setIn(originalIn);
         System.setOut(originalOut);
     }
 
     @Test
     public void testHelpCommand_helpPrinted() {
+
         sendCommand("help", "");
 
         assertThat(out.toString()).startsWith("help");
@@ -133,6 +136,7 @@ public class CliProcessorTest {
 
     @Test
     public void testUnknownCommand_helpMessageDisplayed() {
+
         sendCommand("unk" + System.currentTimeMillis(), "");
 
         assertThat(out.toString()).contains("Available commands");
@@ -150,7 +154,8 @@ public class CliProcessorTest {
                                 .setResultStatus(TaskResult.Status.Success)
                                 .setTaskName("taskId")
                                 .setStatus(TaskStatus.Finished)
-                                .build()).build());
+                                .build())
+                .build());
 
         assertThat(out.toString()).contains("taskId");
         assertThat(out.toString()).contains("Finished");
@@ -160,8 +165,8 @@ public class CliProcessorTest {
     @Test
     public void testOnTaskUpdateStatus_resultPrinted() {
 
-        String taskUpdateStatusMessage = "UpdateMessage" + System
-                .currentTimeMillis();
+        String taskUpdateStatusMessage = "UpdateMessage"
+                + System.currentTimeMillis();
 
         processor.onTaskUpdateStatus(new TaskUpdateResponse.Builder()
                 .setTaskName("Task")
@@ -170,11 +175,11 @@ public class CliProcessorTest {
                 .build());
 
         assertThat(out.toString()).contains(taskUpdateStatusMessage);
-
     }
 
-    private void testCommand(String command, String taskId, Object
-            expectedEvent) {
+    private void testCommand(String command, String taskId,
+                             Object expectedEvent) {
+
         sendCommand(command, taskId);
         assertThat(postEventCaptor.getValue()).isEqualTo(expectedEvent);
     }
@@ -194,5 +199,4 @@ public class CliProcessorTest {
         } catch (NoSuchElementException expected) {
         }
     }
-
 }
