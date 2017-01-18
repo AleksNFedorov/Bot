@@ -14,6 +14,7 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 ### Use case
 
+(clickable)
 <img src="https://raw.githubusercontent.com/AleksNFedorov/Bot/docs/docs/img/use_case_diagramm.png" width="370" />
 
 ## Features 
