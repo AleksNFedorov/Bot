@@ -62,6 +62,13 @@ In a broad context app might be used as a scheduler for any kind of tasks
             <property key="key">value</property>
         </executorConfig>
     </task>
+   <!--
+       Un grouped 'runOnce' task
+       Runs only once with CUSTOM_ONE_RUN executor
+   -->
+   <task id="runOnce" executor="CUSTOM_ONE_RUN">
+       <run>-1</run>
+   </task>    
 </config>
 ```
 
