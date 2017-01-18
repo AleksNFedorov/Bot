@@ -25,6 +25,46 @@ In a broad context app might be used as a scheduler for any kind of tasks
 * Modular design (just add jar with custom executors and/or reports to classpath)
 * API for custom checks and reporting
 
+## Getting started
+
+### Create config file
+
+```xml
+<config>
+    <!-- Task group config -->
+    <group id="GitHub.com">
+        <!--
+            'gitHubPing' task, runs every 10 seconds with PING executor,
+            execution deadline - 3 secs
+        -->
+        <task id="gitHubPing" executor="PING">
+            <run>10</run>
+            <deadline>3</deadline>
+    </task>
+        <!--
+            'gitHubTrace' task, runs every 30 seconds with TRACE executor,
+            execution deadline - 10 secs
+        -->
+        <task id="gitHubTrace" executor="TRACE">
+            <run>30</run>
+            <deadline>10</deadline>
+        </task>
+    </group>
+    <!--
+        Un grouped 'Java.com' task, runs every 2 seconds with CUSTOM_EX executor,
+        execution deadline - 1 secs
+        Contains extra parameters for executor in executorConfig node
+    -->
+    <task id="Java.com" executor="CUSTOM_EX">
+        <run>2</run>
+        <deadline>1</deadline>
+        <executorConfig>
+            <property key="key">value</property>
+        </executorConfig>
+    </task>
+</config>
+```
+
 ## Beta notice
 
 Bot is still under development. Core functionality already implemented and not significant code change expecting, however some minor changes are likely. Stay tuned.
