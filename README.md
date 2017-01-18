@@ -76,6 +76,13 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 #### Build core module
 
+```
+cd <project_path>/common
+mvn install
+cd <project_path>/worker
+mvn install
+```
+
 #### Build moudules with checkes
 
 #### Build custom modules ('if any')
