@@ -72,6 +72,12 @@ In a broad context app might be used as a scheduler for any kind of tasks
 </config>
 ```
 
+### Build project
+
+#### Build core module
+
+## Run project
+
 ## Beta notice
 
 Bot is still under development. Core functionality already implemented and not significant code change expecting, however some minor changes are likely. Stay tuned.
