@@ -76,6 +76,10 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 #### Build core module
 
+#### Build moudules with checkes
+
+#### Build custom modules ('if any')
+
 ## Run project
 
 ## Beta notice
