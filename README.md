@@ -31,7 +31,7 @@ Bot is still under development. Core functionality already implemented and not s
 ## License
 
 
-    Copyright (C) 2016 Nest Labs
+    Copyright (C) 2017 Aleks Fedorov
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
