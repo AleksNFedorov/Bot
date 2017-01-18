@@ -76,9 +76,12 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 #### Build core module
 
-```
+```cmd
+#Build common module
 cd <project_path>/common
 mvn install
+
+#Build worker module
 cd <project_path>/worker
 mvn install
 ```
