@@ -16,3 +16,12 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 <img src="https://raw.githubusercontent.com/AleksNFedorov/Bot/docs/docs/img/use_case_diagramm.png" width="370" />
 
+## Features 
+
+* Set of predefined checks: Ping, HTTP, Trace
+* Command line interface
+* Configuration with XML config
+* Modular design (just add jar with custom executors and/or reports to classpath)
+* API for custom checks and reporting
+
+
