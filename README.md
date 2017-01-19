@@ -130,6 +130,12 @@ Console is used for command line interface. Type --help to get command list.
 <img src="https://raw.githubusercontent.com/AleksNFedorov/Bot/docs/docs/img/consoleHelp.png" width="370" />
 
 
+## More info
+
+[Design details](http://github.com)
+[API](http://github.com)
+
+
 ## Beta notice
 
 Bot is still under development. Core functionality already implemented and not significant code change expecting, however some minor changes are likely. Stay tuned.
