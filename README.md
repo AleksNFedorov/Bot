@@ -132,8 +132,8 @@ Console is used for command line interface. Type --help to get command list.
 
 ## More info
 
-[Design details](http://github.com)
-[API](http://github.com)
+- [Design details](http://github.com)
+- [API](http://github.com)
 
 
 ## Beta notice
