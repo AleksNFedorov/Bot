@@ -103,24 +103,28 @@ Build modules with custom checks and reports, look into [sample](https://github.
 
 ## Run project
 
-
-Windows
+###Windows
 ``` cmd
 java -cp "worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
 
 ```
-Unix 
+###Unix 
 ``` cmd
 java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
 ```
 
-Where 
+###Where 
 
 * worker.jar - artifact from Step 1
 * checks.jar - artifact from Step 2
 * checks.jar - artifact from Step 3
 * <path to config file> - path to tasks XML config
 
+### Important
+
+``` cmd
+Do not expect ouput in console, it is used for Command line interface
+```
 
 
 ## Beta notice
