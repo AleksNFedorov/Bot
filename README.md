@@ -74,7 +74,7 @@ In a broad context app might be used as a scheduler for any kind of tasks
 
 ### Build project
 
-#### Build core module
+#### Build core module (Step 1)
 
 ```cmd
 #Build common module
@@ -86,11 +86,11 @@ cd <project_path>/worker
 mvn install
 ```
 
-#### Build moudules with checkes
+#### Build moudules with checkes (Step 2)
 
 `Not implemented yet`
 
-#### Build custom modules (`if any`)
+#### Build custom modules `if any` (Step 3)
 
 Build modules with custom checks and reports, look into [sample](https://github.com/AleksNFedorov/Bot/tree/master/sample) project for more info
 
@@ -102,6 +102,26 @@ Build modules with custom checks and reports, look into [sample](https://github.
  * Annotate it with [AutoService](https://github.com/google/auto/tree/master/service)
 
 ## Run project
+
+
+Windows
+``` cmd
+java -cp "worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
+
+```
+Unix 
+``` cmd
+java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
+```
+
+Where 
+
+* worker.jar - artifact from Step 1
+* checks.jar - artifact from Step 2
+* checks.jar - artifact from Step 3
+* <path to config file> - path to tasks XML config
+
+
 
 ## Beta notice
 
