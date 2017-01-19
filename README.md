@@ -88,7 +88,18 @@ mvn install
 
 #### Build moudules with checkes
 
-#### Build custom modules ('if any')
+`Not implemented yet`
+
+#### Build custom modules (`if any`)
+
+Build modules with custom checks and reports, look into [sample](https://github.com/AleksNFedorov/Bot/tree/master/sample) project for more info
+
+1. To add custom check
+ * Implement [TaskExecutor](https://github.com/AleksNFedorov/Bot/blob/master/common/src/main/java/com/bot/common/TaskExecutor.java)
+ * Annotate it with [AutoService](https://github.com/google/auto/tree/master/service)
+2. To add custom report
+ * Implement [TaskResultProcessor](https://github.com/AleksNFedorov/Bot/blob/master/common/src/main/java/com/bot/common/TaskResultProcessor.java)
+ * Annotate it with [AutoService](https://github.com/google/auto/tree/master/service)
 
 ## Run project
 
