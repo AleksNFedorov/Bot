@@ -105,12 +105,12 @@ Build modules with custom checks and reports, look into [sample](https://github.
 
 ###Windows
 ``` cmd
-java -cp "worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
+java -cp "worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
 
 ```
 ###Unix 
 ``` cmd
-java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=<path to config file>
+java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
 ```
 
 ###Where 
@@ -118,13 +118,16 @@ java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-con
 * worker.jar - artifact from Step 1
 * checks.jar - artifact from Step 2
 * checks.jar - artifact from Step 3
-* <path to config file> - path to tasks XML config
+* path_to_config_file - path to tasks XML config
 
 ### Important
 
 ``` cmd
-Do not expect ouput in console, it is used for Command line interface
+By default logs are written to app home folder under ‘log’. 
+Console is used for command line interface. Type --help to get command list.
 ```
+
+<img src="https://raw.githubusercontent.com/AleksNFedorov/Bot/docs/docs/img/consoleHelp.png" width="370" />
 
 
 ## Beta notice
