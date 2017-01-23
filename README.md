@@ -105,17 +105,17 @@ Build modules with custom checks and reports, look into [sample](https://github.
 
 ###Windows
 ``` cmd
-java -cp "worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
+java -cp "common.jar;worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
 
 ```
 ###Unix 
 ``` cmd
-java -cp "worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
+java -cp "common.jar:worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
 ```
 
 ###Where 
 
-* worker.jar - artifact from Step 1
+* worker.jar and common.jar - artifacts from Step 1
 * checks.jar - artifact from Step 2
 * checks.jar - artifact from Step 3
 * path_to_config_file - path to tasks XML config
