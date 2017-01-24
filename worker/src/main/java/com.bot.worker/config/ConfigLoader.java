@@ -21,7 +21,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/17/16.
+ * Loads task configs from configuration file
+ * Initial config loading happens on receiving {@link AppInitEvent}
+ *
+ * <p>
+ * Config example
+ * {@code
+ *
+ * <config>
+ *      <group id="GitHub.com">
+ *          <task id="gitHubPing" executor="PING">
+ *              <run>10</run>
+ *              <deadline>3</deadline>
+ *          </task>
+ *          <task id="gitHubTrace" executor="TRACE">
+ *              <run>30</run>
+ *              <deadline>10</deadline>
+ *          </task>
+ *      </group>
+ *      <task id="Java.com" executor="CUSTOM_EX">
+ *          <run>2</run>
+ *          <deadline>1</deadline>
+ *          <executorConfig>
+ *              <property key="key">value</property>
+ *          </executorConfig>
+ *      </task>
+ *      <task id="runOnce" executor="CUSTOM_ONE_RUN">
+ *          <run>-1</run>
+ *      </task>
+ * </config>
+ * }
+ *
+ * <p>
+ *  All communication with other app components goes though event bus,
+ *  look {@link EventBusComponent} for more info
+ *
+ * @author Aleks
  */
 @Singleton
 public class ConfigLoader extends EventBusComponent {
@@ -41,11 +76,25 @@ public class ConfigLoader extends EventBusComponent {
                 .getTaskName());
     }
 
+    /**
+     * Initial config loading on app init event
+     * @param event app init event
+     * @throws JAXBException in case of config parse exception
+     * @throws IOException in case of config file IO exception
+     */
     @Subscribe
     void onInit(AppInitEvent event) throws JAXBException, IOException {
         loadTaskConfigs(Constants.ALL);
     }
 
+    /**
+     * Handler for task config reload requests
+     *
+     * @see TaskConfigReloadRequest
+     * @param reloadEvent events with task name to reload
+     * @throws JAXBException in case of config parse exception
+     * @throws IOException in case of config file IO exception
+     */
     @Subscribe
     void onConfigReload(TaskConfigReloadRequest reloadEvent) throws JAXBException, IOException {
         String taskName = reloadEvent.getTaskName();

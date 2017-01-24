@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/14/16.
+ * Starts Bot application
+ * @author Aleks
  */
 public class BotStarter {
 

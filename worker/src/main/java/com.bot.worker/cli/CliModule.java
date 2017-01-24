@@ -13,7 +13,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 
 /**
- * Created by Aleks on 11/14/16.
+ * CLI Google guice module, initializes required bindings for CLI
+ *
+ * @see <a href="https://commons.apache.org/proper/commons-cli/">Commons CLI</a>
+ * @see <a href="https://github.com/google/guice">Google guice</a>
+ * @author Aleks
  */
 @Guarded
 public class CliModule extends AbstractModule {
@@ -22,6 +26,10 @@ public class CliModule extends AbstractModule {
 
   private final CommandLine commandLine;
 
+  /**
+   * @param commandLineArguments boot loading parameters, used to be arguments from main method
+   * @throws ParseException in case of unable to parse arguments
+   */
   public CliModule(@NotNull final String[] commandLineArguments)
       throws ParseException {
 
@@ -37,16 +45,14 @@ public class CliModule extends AbstractModule {
   @TaskConfigFile
   @Provides
   String providesPathToConfigFile() {
-    return commandLine.getOptionValue(BootOptions
-        .TASK_CONFIG_FILE_PATH);
+    return commandLine.getOptionValue(BootOptions.TASK_CONFIG_FILE_PATH);
   }
 
   @ThreadsCount
   @Provides
   Integer providesThreadsCount() {
     if (commandLine.hasOption(BootOptions.THREADS_COUNT)) {
-      return Integer.parseInt(commandLine.getOptionValue(BootOptions
-          .THREADS_COUNT));
+      return Integer.parseInt(commandLine.getOptionValue(BootOptions.THREADS_COUNT));
     }
     return THREADS_COUNT_DEFAULT;
   }

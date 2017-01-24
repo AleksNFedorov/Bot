@@ -6,7 +6,19 @@ import com.bot.worker.common.TaskStatus;
 import java.util.concurrent.Future;
 
 /**
- * Created by Aleks on 11/20/16.
+ * Container for task configuration and execution info
+ *
+ * <p>
+ * Contains next data
+ * <ul>
+ *     <li>{@link TaskConfig}</li>
+ *     <li>Group name</li>
+ *     <li>Task execution {@link Future}</li>
+ *     <li>Last {@link TaskResult}</li>
+ *     <li>{@link TaskStatus}</li>
+ * </ul>
+ *
+ * @author Aleks
  */
 class TaskContext {
 
@@ -55,6 +67,11 @@ class TaskContext {
     this.status = status;
   }
 
+  /**
+   * Cancels tasks and sets status to 'Hold'
+   * @see TaskStatus
+   * @see com.bot.worker.cli.Command.hold
+   */
   void putOnHold() {
     future.cancel(true);
     setStatus(TaskStatus.Hold);

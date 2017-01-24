@@ -10,7 +10,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
- * Created by Aleks on 1/12/17.
+ * Task manager Google guice module, initializes required bindings for task management and execution
+ *
+ * @author Aleks
  */
 public class TaskManagerModule extends AbstractModule {
 

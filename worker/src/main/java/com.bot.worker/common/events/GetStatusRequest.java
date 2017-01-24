@@ -4,7 +4,7 @@ import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 12/4/16.
+ * Requests status info for given task or all tasks
  */
 @FreeBuilder
 public interface GetStatusRequest extends TaskUpdateRequest {
@@ -20,7 +20,5 @@ public interface GetStatusRequest extends TaskUpdateRequest {
         .build();
   }
 
-  class Builder extends GetStatusRequest_Builder {
-
-  }
+  class Builder extends GetStatusRequest_Builder {}
 }

@@ -3,12 +3,18 @@ package com.bot.common;
 import java.util.Map;
 
 /**
- * Task config.
+ * Task config. Contains key parameters to schedule and execute task
+ *
  * <p>
  * {@link #getDeadline()} must be strongly less than {@link #getRunInterval()}
- * All time properties should be specified in SECOND time unit.
+ *
  * <p>
  * To make task as on time run task schedule interval must be eqal to {@link #ONE_TIME_TASK}
+ *
+ * <p>
+ * Use {@link #config} to specify executor specific parameters
+ *
+ * @see TaskExecutor
  */
 public class TaskConfig {
 

@@ -12,6 +12,8 @@ import java.util.Optional;
 
 /**
  * Task execution result.
+ *
+ * @author Aleks
  */
 public class TaskResult {
 

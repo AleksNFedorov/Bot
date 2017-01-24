@@ -17,7 +17,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Created by Aleks on 11/18/16.
+ * JAXB binding to parse task XML config
+ *
+ * @see <a href="http://www.oracle.com/technetwork/articles/javase/index-140168.html">JAXB</a>
+ * @author Aleks
  */
 @XmlRootElement(name = "config")
 class XmlConfig {

@@ -4,7 +4,9 @@ import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 12/5/16.
+ * Request to cancel task execution
+ *
+ * @author Aleks
  */
 @FreeBuilder
 public interface TaskHoldRequest extends TaskUpdateRequest {

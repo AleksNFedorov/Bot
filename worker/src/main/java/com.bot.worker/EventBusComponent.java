@@ -6,7 +6,9 @@ import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.Guarded;
 
 /**
- * Created by Aleks on 11/14/16.
+ * Ancestor class for linking particular component with EventBus and provide helper methods to post events
+ *
+ * @author Aleks
  */
 @Guarded
 public abstract class EventBusComponent {
@@ -18,7 +20,7 @@ public abstract class EventBusComponent {
   }
 
   @Inject
-  public void setEventBus(EventBus eventBus) {
+  public final void setEventBus(EventBus eventBus) {
     this.eventBus = eventBus;
     eventBus.register(this);
   }

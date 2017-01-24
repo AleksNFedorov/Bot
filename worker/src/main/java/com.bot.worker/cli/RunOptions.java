@@ -4,7 +4,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /**
- * Created by Aleks on 11/25/16.
+ * Command line interface options, available to use during runtime
+ *
+ * @see Command
+ * @see CliProcessor
+ * @author Aleks
  */
 class RunOptions extends Options {
 

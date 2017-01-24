@@ -36,7 +36,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/19/16.
+ * Master class to manage and execute tasks.
+ * For more info see methods annotated with {@code @Subscribe}
+ *
+ * <p>
+ *  Supported opperations
+ *  <ul>
+ *      <li>Schedule new task</li>
+ *      <li>Execute task with particular executor</li>
+ *      <li>Drop task</li>
+ *      <li>Put task on hold</li>
+ *      <li>Provide task(s) details</li>
+ *  </ul>
+ *
+ * <p>
+ *  All communication with other app components goes though event bus,
+ *  look {@link EventBusComponent} for more info
+ *
+ *  @see com.bot.worker.cli.Command
+ *  @see com.bot.worker.config.ConfigLoader
+ *  @see com.bot.worker.cli.CliProcessor
+ *
+ * @author Aleks
  */
 public class TaskManager extends EventBusComponent {
 
@@ -66,20 +87,10 @@ public class TaskManager extends EventBusComponent {
     this.resultProcessor = new TaskResultProcessorDecorator(resultProcessors);
   }
 
-  private static TaskStatus getNewTaskStatus(TaskContext context) {
-    TaskStatus newStatus = TaskStatus.Unknown;
-    switch (context.getStatus()) {
-      case Running:
-        newStatus = context.getConfig().isOneTimeTask() ?
-            TaskStatus.Finished : TaskStatus.Scheduled;
-        break;
-      case Hold:
-        newStatus = TaskStatus.Hold;
-        break;
-    }
-    return newStatus;
-  }
-
+  /**
+   * Schedule new task config for execution
+   * @param newConfigEvent
+   */
   @Subscribe
   synchronized void onNewTaskConfig(TaskConfigLoadedResponse newConfigEvent) {
     String taskGroup = newConfigEvent.getGroupName();
@@ -160,6 +171,12 @@ public class TaskManager extends EventBusComponent {
     return idToTask.get(config.getTaskName());
   }
 
+  /**
+   * Stops task execution and remove all information about task
+   *
+   * @see TaskDropRequest
+   * @param event
+   */
   @Subscribe
   synchronized void onTaskDropEvent(TaskDropRequest event) {
     List<TaskContext> tasks = getTasksById(event.getTaskName());
@@ -176,6 +193,10 @@ public class TaskManager extends EventBusComponent {
     onGetStatusRequest(GetStatusRequest.create(event.getTaskName()));
   }
 
+  /**
+   * Tries to re-schedule task. Task should have either Hold of Finished status
+   * @param event
+   */
   @Subscribe
   synchronized void onTaskScheduleEvent(TaskScheduleRequest event) {
     getTasksById(event.getTaskName())
@@ -188,6 +209,10 @@ public class TaskManager extends EventBusComponent {
     onGetStatusRequest(GetStatusRequest.create(event.getTaskName()));
   }
 
+  /**
+   * Puts task on hold, {@link TaskStatus} should be either Running or Scheduled
+   * @param event
+   */
   @Subscribe
   synchronized void onTaskHoldEvent(TaskHoldRequest event) {
     getTasksById(event.getTaskName())
@@ -200,6 +225,10 @@ public class TaskManager extends EventBusComponent {
     onGetStatusRequest(GetStatusRequest.create(event.getTaskName()));
   }
 
+  /**
+   * Posts information about requested task
+   * @param request
+   */
   @Subscribe
   synchronized void onGetStatusRequest(GetStatusRequest request) {
     post(new GetStatusResponse.Builder()
@@ -230,5 +259,19 @@ public class TaskManager extends EventBusComponent {
     }
 
     return tasks.build();
+  }
+
+  private static TaskStatus getNewTaskStatus(TaskContext context) {
+    TaskStatus newStatus = TaskStatus.Unknown;
+    switch (context.getStatus()) {
+      case Running:
+        newStatus = context.getConfig().isOneTimeTask() ?
+                TaskStatus.Finished : TaskStatus.Scheduled;
+        break;
+      case Hold:
+        newStatus = TaskStatus.Hold;
+        break;
+    }
+    return newStatus;
   }
 }

@@ -7,10 +7,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by Aleks on 11/17/16.
+ * Application wide binding annotations annotations
+ *
+ * @see com.bot.worker.cli.CliModule
+ * @see com.bot.worker.taskmanager.TaskManager
+ * @author Aleks
  */
 public class Annotations {
 
+  /**
+   * Amount of threads in app to process tasks, keep this value appropriate to amount of tasks
+   * @see com.bot.worker.cli.BootOptions
+   */
   @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
   @BindingAnnotation
   @Retention(RetentionPolicy.RUNTIME)

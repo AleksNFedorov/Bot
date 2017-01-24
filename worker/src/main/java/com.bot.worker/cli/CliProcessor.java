@@ -25,22 +25,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/25/16.
+ * Processes commands coming from console, intended to use for app/task management.
+ * Check {@link Command} for full list of available commands
+ *
+ * <p>
+ *  All communication with other app components goes though event bus,
+ *  look {@link EventBusComponent} for more info
+ *
+ * <p>
+ * <b>Important</b> do not write logs into console, it will be considered as user input
+ *
+ * @author Aleks
  */
 @Singleton
 public class CliProcessor extends EventBusComponent {
 
     private static final DateTimeFormatter DEFAULT_TIME_FORMATTER =
-            DateTimeFormatter
-                    .ISO_LOCAL_TIME;
+            DateTimeFormatter.ISO_LOCAL_TIME;
 
     private static final DateTimeFormatter DEFAULT_DATE_FORMATTER =
-            DateTimeFormatter
-                    .ISO_LOCAL_DATE;
+            DateTimeFormatter.ISO_LOCAL_DATE;
 
-    private static final Logger logger = LoggerFactory.getLogger(CliProcessor
-            .class);
-
+    private static final Logger logger = LoggerFactory.getLogger(CliProcessor.class);
 
     private final Executor executor;
 

@@ -4,7 +4,7 @@ import com.bot.worker.cli.Command;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 11/25/16.
+ * Task update request processing result.
  */
 @FreeBuilder
 public interface TaskUpdateResponse {

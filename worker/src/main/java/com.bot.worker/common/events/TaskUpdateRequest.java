@@ -1,7 +1,8 @@
 package com.bot.worker.common.events;
 
 /**
- * Created by Aleks on 12/28/2016.
+ * Ancestor for all events which request task(s) update
+ * @author Aleks
  */
 interface TaskUpdateRequest {
 

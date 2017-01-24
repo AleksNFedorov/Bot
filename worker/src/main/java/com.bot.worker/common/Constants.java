@@ -1,7 +1,9 @@
 package com.bot.worker.common;
 
 /**
- * Created by Aleks on 12/7/16.
+ * Application wide constants
+ *
+ * @author Aleks
  */
 public interface Constants {
 

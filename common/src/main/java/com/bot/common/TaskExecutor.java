@@ -1,10 +1,14 @@
 package com.bot.common;
 
 /**
- * General interface for task Executors.
- * Every instance must be stateless to be ready accept concurrent execution call.
+ * Interface for task executors implementations
+ * Every instance must be stateless to be ready accept concurrent execution calls.
+ *
+ * It is implementation responsibility to execute task within given deadline or throw exception.
+ *
  * <p>
- * Parametrized with custom config to allow utilize executor specific fields in config.
+ *  <b>Important</b> {@link #executeTask(TaskConfig)} method should be responsive on Thread interruption calls
+ *
  */
 public interface TaskExecutor {
 
@@ -17,9 +21,8 @@ public interface TaskExecutor {
   String getId();
 
   /**
-   * Method to execute task specified by config. Task must be executed within a deadline specified
-   * in {@link TaskConfig#getDeadline()} If unable to execute task within given deadline, TaskResult
-   * with fail status should be returned.
+   * Method to execute task specified by config. Task must be executed within a deadline form
+   *  {@link TaskConfig#getDeadline()}
    *
    * @param config task config
    * @return task execution result

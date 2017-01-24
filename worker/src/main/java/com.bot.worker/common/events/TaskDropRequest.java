@@ -4,7 +4,9 @@ import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 12/8/16.
+ * Request to cancel task and remove all information from app
+ *
+ * @author Aleks
  */
 @FreeBuilder
 public interface TaskDropRequest extends TaskUpdateRequest {

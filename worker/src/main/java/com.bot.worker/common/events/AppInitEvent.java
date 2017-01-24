@@ -3,7 +3,8 @@ package com.bot.worker.common.events;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 11/17/16.
+ * Event which requests component initialization
+ * @author Aleks
  */
 @FreeBuilder
 public interface AppInitEvent {

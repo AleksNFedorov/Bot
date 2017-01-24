@@ -4,7 +4,8 @@ import com.bot.common.TaskConfig;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Created by Aleks on 11/17/16.
+ * Response on {@link TaskConfigReloadRequest}
+ * @author Aleks
  */
 @FreeBuilder
 public interface TaskConfigLoadedResponse {
@@ -20,7 +21,5 @@ public interface TaskConfigLoadedResponse {
 
   String getGroupName();
 
-  class Builder extends TaskConfigLoadedResponse_Builder {
-
-  }
+  class Builder extends TaskConfigLoadedResponse_Builder {}
 }

@@ -1,7 +1,10 @@
 package com.bot.worker.cli;
 
 /**
- * Created by Aleks on 11/25/16.
+ * Enum with all CLI option details
+ *
+ * @see CliProcessor
+ * @author Aleks
  */
 public enum Command {
   help("Show this help message", "help"),

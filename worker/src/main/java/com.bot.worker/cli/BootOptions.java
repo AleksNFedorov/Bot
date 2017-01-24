@@ -4,7 +4,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 /**
- * Created by Aleks on 11/14/16.
+ * Command line options available on app boot loading
+ *
+ * @author Aleks
  */
 class BootOptions extends Options {
 

@@ -15,13 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/14/16.
+ * Bot application guice module, initialize global bindings.
+ * Responsible for loading registered {@link TaskResultProcessor} and {@link TaskExecutor} implementations
+ *
+ * @author Aleks
  */
 class BotModule extends AbstractModule {
 
   protected void configure() {
     bind(ConfigLoader.class).asEagerSingleton();
   }
+
 
   @Singleton
   @Provides
@@ -35,8 +39,9 @@ class BotModule extends AbstractModule {
   @Singleton
   @Provides
   ImmutableList<TaskResultProcessor> provideResultProcessors() {
-    return ImmutableList.copyOf(ServiceLoader.load(
-        TaskResultProcessor.class).iterator());
+    return ImmutableList.copyOf(
+            ServiceLoader.load(TaskResultProcessor.class)
+                    .iterator());
   }
 
   @Singleton
