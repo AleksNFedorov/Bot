@@ -34,14 +34,28 @@ public class TaskResult {
         this.taskName = taskName;
     }
 
+    /**
+     * Task name from {@link TaskConfig#getTaskName()}
+     * @return task name
+     */
     public String getTaskName() {
         return taskName;
     }
 
+    /**
+     * Timestamp of result creation
+     * @return local data time
+     */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Task execution status
+     *
+     * @see Status for more info
+     * @return status
+     */
     public Status getStatus() {
         return status;
     }
@@ -81,11 +95,32 @@ public class TaskResult {
                 .toString();
     }
 
+    /**
+     * Status of task execution
+     */
     public enum Status {
+        /**
+         * Initial value for newly created task
+         */
         NoStatusYet,
+        /**
+         * Task executed, result - success.
+         * Should be set by {@link TaskExecutor}
+         */
         Success,
+        /**
+         * Task executed, result - fail.
+         * Should be set by {@link TaskExecutor}
+         */
         Fail,
+        /**
+         * Exception during task execution
+         */
         Exception,
+        /**
+         * Task failed to be executed within a given deadline.
+         * @see TaskConfig#getDeadline()
+         */
         DeadlineExceed
     }
 }
