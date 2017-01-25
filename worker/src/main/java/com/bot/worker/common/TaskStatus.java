@@ -1,12 +1,24 @@
 package com.bot.worker.common;
 
 /**
- * Flow for scheduling task: Scheduled -> Running/Hold -> Scheduled
- * Flow for 'one time task' task: Scheduled -> Running/Hold -> Finished
+ * Flow for scheduling task:
+ * <ul>
+ *     <li>1. Scheduled</li>
+ *     <li>2. Running/Hold</li>
+ *     <li>3. Scheduled</li>
+ * </ul>
+ *
+ * <p>
+ * Flow for 'one time task' task
+ * <ul>
+ *     <li>1. Scheduled</li>
+ *     <li>2. Running/Hold</li>
+ *     <li>3. Finished</li>
+ * </ul>
  *
  * @author Aleks
  */
-//TODO rename to status
+//TODO rename to state
 public enum TaskStatus {
   /**
    * When task is scheduled but not being executed yet
