@@ -106,7 +106,6 @@ Build modules with custom checks and reports, look into [sample](https://github.
 ###Windows
 ``` cmd
 java -cp "common.jar;worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
-
 ```
 ###Unix 
 ``` cmd
