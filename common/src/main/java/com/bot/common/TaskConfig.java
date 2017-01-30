@@ -3,7 +3,9 @@ package com.bot.common;
 import java.util.Map;
 
 
-/// Aleks test comment
+//Aleks
+//
+//This is a test comment
 
 /**
  * Task config. Contains key parameters to schedule and execute task
