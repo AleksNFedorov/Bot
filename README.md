@@ -106,7 +106,6 @@ Build modules with custom checks and reports, look into [sample](https://github.
 ###Windows
 ``` cmd
 java -cp "common.jar;worker.jar;checks.jar;custom.jar" com.bot.worker.BotStarter --task-config-file=path_to_config_file
-
 ```
 ###Unix 
 ``` cmd
@@ -132,8 +131,8 @@ Console is used for command line interface. Type --help to get command list.
 
 ## More info
 
-- [Design details](http://github.com)
-- [API](http://github.com)
+- [Design details](https://github.com/AleksNFedorov/Bot/wiki)
+- [Java Doc](https://aleksnfedorov.github.io/javadoc/)
 
 
 ## Beta notice
