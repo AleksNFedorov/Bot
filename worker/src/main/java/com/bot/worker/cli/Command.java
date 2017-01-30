@@ -1,7 +1,7 @@
 package com.bot.worker.cli;
 
 /**
- * Enum with all CLI option details
+ * Enum with all CLI commands
  *
  * @see CliProcessor
  * @author Aleks

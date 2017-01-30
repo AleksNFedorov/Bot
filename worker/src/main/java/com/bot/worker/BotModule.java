@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Bot application guice module, initialize global bindings.
- * Responsible for loading registered {@link TaskResultProcessor} and {@link TaskExecutor} implementations
+ * Responsible for loading registered implementations of {@link TaskResultProcessor} and {@link TaskExecutor}
  *
  * @author Aleks
  */

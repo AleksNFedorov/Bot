@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decorator which logs task execution result and sequentially calls registered result processors
+ * Decorating class which logs task execution result and sequentially calls registered result processors
  *
  * @see TaskResultProcessor
  * @author Aleks

@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * For more info see methods annotated with {@code @Subscribe}
  *
  * <p>
- *  Supported opperations
+ *  Supported operations
  *  <ul>
  *      <li>Schedule new task</li>
  *      <li>Execute task with particular executor</li>
@@ -174,8 +174,7 @@ public class TaskManager extends EventBusComponent {
   /**
    * Stops task execution and remove all information about task
    *
-   * @see TaskDropRequest
-   * @param event
+   * @param event {@link TaskDropRequest}
    */
   @Subscribe
   synchronized void onTaskDropEvent(TaskDropRequest event) {
@@ -195,7 +194,8 @@ public class TaskManager extends EventBusComponent {
 
   /**
    * Tries to re-schedule task. Task should have either Hold of Finished status
-   * @param event
+   *
+   * @param event {@link TaskScheduleRequest}
    */
   @Subscribe
   synchronized void onTaskScheduleEvent(TaskScheduleRequest event) {
@@ -211,7 +211,8 @@ public class TaskManager extends EventBusComponent {
 
   /**
    * Puts task on hold, {@link TaskStatus} should be either Running or Scheduled
-   * @param event
+   *
+   * @param event {@link TaskHoldRequest}
    */
   @Subscribe
   synchronized void onTaskHoldEvent(TaskHoldRequest event) {
@@ -227,7 +228,8 @@ public class TaskManager extends EventBusComponent {
 
   /**
    * Posts information about requested task
-   * @param request
+   *
+   * @param request {@link GetStatusRequest}
    */
   @Subscribe
   synchronized void onGetStatusRequest(GetStatusRequest request) {

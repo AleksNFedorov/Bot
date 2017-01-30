@@ -8,7 +8,7 @@ import org.apache.commons.cli.Options;
  *
  * @author Aleks
  */
-class BootOptions extends Options {
+public class BootOptions extends Options {
 
   static final String THREADS_COUNT = "threads-count";
   static final String TASK_CONFIG_FILE_PATH = "task-config-file";

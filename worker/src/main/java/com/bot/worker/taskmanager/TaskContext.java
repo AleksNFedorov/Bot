@@ -69,8 +69,9 @@ class TaskContext {
 
   /**
    * Cancels tasks and sets status to 'Hold'
+   *
    * @see TaskStatus
-   * @see com.bot.worker.cli.Command.hold
+   * @see com.bot.worker.cli.Command
    */
   void putOnHold() {
     future.cancel(true);
