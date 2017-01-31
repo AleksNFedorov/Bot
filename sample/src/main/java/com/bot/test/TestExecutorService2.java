@@ -8,20 +8,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Aleks on 11/23/16.
+ * Sample task executor.
+ * Creates success result for every execution call
  */
 @AutoService(TaskExecutor.class)
 public class TestExecutorService2 implements TaskExecutor {
 
-  private static final Logger logger = LoggerFactory.getLogger(TestExecutorService2.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TestExecutorService2.class);
 
   public String getId() {
     return "executor2";
   }
 
   public TaskResult executeTask(TaskConfig config) {
-    logger.info("Executing task in " + getId());
-    return new TaskResult(config.getTaskName(), TaskResult.Status.Success, "Test execution " +
-        "success");
+    LOG.info("Executing task in " + getId());
+    return new TaskResult(config.getTaskName(), TaskResult.Status.Success,
+            "Test execution success");
   }
 }

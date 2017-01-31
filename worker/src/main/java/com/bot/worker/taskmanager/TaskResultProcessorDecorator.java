@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskResultProcessorDecorator implements TaskResultProcessor {
 
-  private static final Logger logger = LoggerFactory.getLogger(TaskResultProcessorDecorator.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TaskResultProcessorDecorator.class);
 
   private final ImmutableList<TaskResultProcessor> processors;
 
@@ -27,7 +27,7 @@ public class TaskResultProcessorDecorator implements TaskResultProcessor {
 
   @Override
   public void processResult(TaskResult result, List<TaskResult> group) {
-    logger.info("Result processed [{}]", result);
+    LOG.info("Result processed [{}]", result);
     processors.forEach((processor) ->
         processor.processResult(result, group));
   }

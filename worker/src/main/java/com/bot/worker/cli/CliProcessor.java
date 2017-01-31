@@ -46,7 +46,7 @@ public class CliProcessor extends EventBusComponent {
     private static final DateTimeFormatter DEFAULT_DATE_FORMATTER =
             DateTimeFormatter.ISO_LOCAL_DATE;
 
-    private static final Logger logger = LoggerFactory.getLogger(CliProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CliProcessor.class);
 
     private final Executor executor;
 
@@ -77,13 +77,13 @@ public class CliProcessor extends EventBusComponent {
                                 processCommand(command);
                             }
                         } catch (Exception e) {
-                            logger.error("Exception during processing command ", e);
+                            LOG.error("Exception during processing command ", e);
                             System.out.println(String.format("%s, use '-HELP' for " +
                                     "more info", e.getLocalizedMessage()));
                             displayHelpMessage();
                         }
                     }
-                    logger.warn("CLI Stopped");
+                    LOG.warn("CLI Stopped");
                 }
         );
     }
@@ -108,7 +108,7 @@ public class CliProcessor extends EventBusComponent {
     }
 
     private void processOption(Command command, CommandLine commandLine) {
-        logger.info("Processing CLI command [{}]", command.name());
+        LOG.info("Processing CLI command [{}]", command.name());
         System.out.println(command.name());
         String taskId = Strings.nullToEmpty(commandLine
                 .getOptionValue(command.name()));

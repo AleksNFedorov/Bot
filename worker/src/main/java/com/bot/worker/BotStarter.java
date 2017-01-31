@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
  */
 public class BotStarter {
 
-  private static final Logger logger = LoggerFactory.getLogger(BotStarter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BotStarter.class);
 
   public static void main(String... args) throws ParseException {
-    logger.info("Starting application with arguments " +
+    LOG.info("Starting application with arguments " +
         Arrays.toString(args));
     try {
       Injector injector = Guice.createInjector(
@@ -33,7 +33,7 @@ public class BotStarter {
       bus.post(AppInitEvent.create());
 
     } finally {
-      logger.error("Application stopped ");
+      LOG.error("Application stopped ");
     }
   }
 }

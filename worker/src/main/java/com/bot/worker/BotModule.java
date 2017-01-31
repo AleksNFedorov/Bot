@@ -49,13 +49,13 @@ class BotModule extends AbstractModule {
   EventBus provideEventBus() {
     return new EventBus(new SubscriberExceptionHandler() {
 
-      private final Logger logger = LoggerFactory.getLogger("ExceptionLogger");
+      private final Logger LOG = LoggerFactory.getLogger("ExceptionLogger");
 
       @Override
       public void handleException(final Throwable exception,
           final SubscriberExceptionContext context) {
 
-        logger.error("Exception", exception);
+        LOG.error("Exception", exception);
       }
     });
   }

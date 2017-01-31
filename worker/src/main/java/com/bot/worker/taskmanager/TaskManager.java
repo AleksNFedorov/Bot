@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskManager extends EventBusComponent {
 
-  private static final Logger logger = LoggerFactory.getLogger(TaskManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TaskManager.class);
 
   private final ScheduledExecutorService executorService;
   private final ExecutorService taskExecutor;
@@ -120,7 +120,7 @@ public class TaskManager extends EventBusComponent {
     long deadline = taskConfig.getDeadline();
 
     return () -> {
-      logger.info("Running {}", taskConfig.getTaskName());
+      LOG.info("Running {}", taskConfig.getTaskName());
       TimeLimiter limiter = new SimpleTimeLimiter(taskExecutor);
       TaskResult result;
       try {

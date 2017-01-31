@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class ConfigLoader extends EventBusComponent {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
 
     private final String pathToConfigFile;
 
@@ -107,8 +107,8 @@ public class ConfigLoader extends EventBusComponent {
 
         XmlConfig config = parseConfig();
 
-        logger.info("Total group confings: {}", config.getGroups());
-        logger.info("Total non-grouped configs : {}", config.getTasks());
+        LOG.info("Total group confings: {}", config.getGroups());
+        LOG.info("Total non-grouped configs : {}", config.getTasks());
 
         config.getGroups()
                 .forEach(group -> group.getTasks()
@@ -126,11 +126,11 @@ public class ConfigLoader extends EventBusComponent {
                 .filter(c -> isValidTaskConfig(taskName, c))
                 .forEach(task -> processTaskConfig(Constants.NO_GROUP, task));
 
-        logger.info("All configs loaded");
+        LOG.info("All configs loaded");
     }
 
     private void processTaskConfig(String groupName, XmlTaskConfig task) {
-        logger.info("Loading config {}", task);
+        LOG.info("Loading config {}", task);
         post(TaskConfigLoadedResponse.create(groupName, task));
     }
 
