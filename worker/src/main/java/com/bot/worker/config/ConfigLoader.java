@@ -88,10 +88,10 @@ public class ConfigLoader extends EventBusComponent {
     }
 
     /**
-     * Handler for task config reload requests
+     * Handler for task config RELOAD requests
      *
      * @see TaskConfigReloadRequest
-     * @param reloadEvent events with task name to reload
+     * @param reloadEvent events with task name to RELOAD
      * @throws JAXBException in case of config parse exception
      * @throws IOException in case of config file IO exception
      */
@@ -113,8 +113,8 @@ public class ConfigLoader extends EventBusComponent {
         config.getGroups()
                 .forEach(group -> group.getTasks()
                         .stream()
-                        .filter((c) -> isValidTaskConfig(taskName, c))
-                        .forEach((task) -> {
+                        .filter(c -> isValidTaskConfig(taskName, c))
+                        .forEach(task -> {
                                     processTaskConfig(group.getGroupName(), task);
                                 }
                         )

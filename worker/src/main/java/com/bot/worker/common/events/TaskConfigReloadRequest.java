@@ -4,7 +4,7 @@ import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Request to reload task configuration from config file
+ * Request to RELOAD task configuration from config file
  */
 @FreeBuilder
 public interface TaskConfigReloadRequest extends TaskUpdateRequest {

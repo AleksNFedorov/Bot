@@ -7,6 +7,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import java.util.Arrays;
+
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,7 @@ public class BotStarter {
 
   private static final Logger logger = LoggerFactory.getLogger(BotStarter.class);
 
-  public static void main(String... args) {
+  public static void main(String... args) throws ParseException {
     logger.info("Starting application with arguments " +
         Arrays.toString(args));
     try {
@@ -30,8 +32,8 @@ public class BotStarter {
       EventBus bus = injector.getInstance(EventBus.class);
       bus.post(AppInitEvent.create());
 
-    } catch (Throwable th) {
-      logger.error("Application running exception ", th);
+    } finally {
+      logger.error("Application stopped ");
     }
   }
 }

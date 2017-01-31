@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *      <li>Schedule new task</li>
  *      <li>Execute task with particular executor</li>
  *      <li>Drop task</li>
- *      <li>Put task on hold</li>
+ *      <li>Put task on HOLD</li>
  *      <li>Provide task(s) details</li>
  *  </ul>
  *
@@ -193,7 +193,7 @@ public class TaskManager extends EventBusComponent {
   }
 
   /**
-   * Tries to re-schedule task. Task should have either Hold of Finished status
+   * Tries to re-SCHEDULE task. Task should have either Hold of Finished STATUS
    *
    * @param event {@link TaskScheduleRequest}
    */
@@ -210,7 +210,7 @@ public class TaskManager extends EventBusComponent {
   }
 
   /**
-   * Puts task on hold, {@link TaskStatus} should be either Running or Scheduled
+   * Puts task on HOLD, {@link TaskStatus} should be either Running or Scheduled
    *
    * @param event {@link TaskHoldRequest}
    */

@@ -85,59 +85,59 @@ public class CliProcessorTest {
   @Test
   public void testHelpCommand_helpPrinted() {
 
-    sendCommand("help", "");
+    sendCommand("HELP", "");
 
-    assertThat(out.toString()).startsWith("help");
+    assertThat(out.toString()).startsWith("HELP");
   }
 
   @Test
   public void testStatusCommand_specificTask_statusRequestSent() {
-    testCommand("status", "1", GetStatusRequest.create("1"));
+    testCommand("STATUS", "1", GetStatusRequest.create("1"));
   }
 
   @Test
   public void testStatusCommand_allTasks_statusRequestSent() {
-    testCommand("status", "all", GetStatusRequest.create());
+    testCommand("STATUS", "all", GetStatusRequest.create());
   }
 
   @Test
   public void testHoldCommand_specificTask_statusRequestSent() {
-    testCommand("hold", "1", TaskHoldRequest.create("1"));
+    testCommand("HOLD", "1", TaskHoldRequest.create("1"));
   }
 
   @Test
   public void testHoldCommand_allTasks_statusRequestSent() {
-    testCommand("hold", "all", TaskHoldRequest.create());
+    testCommand("HOLD", "all", TaskHoldRequest.create());
   }
 
   @Test
   public void testScheduleCommand_specificTask_statusRequestSent() {
-    testCommand("schedule", "1", TaskScheduleRequest.create("1"));
+    testCommand("SCHEDULE", "1", TaskScheduleRequest.create("1"));
   }
 
   @Test
   public void testScheduleCommand_allTasks_statusRequestSent() {
-    testCommand("schedule", "all", TaskScheduleRequest.create());
+    testCommand("SCHEDULE", "all", TaskScheduleRequest.create());
   }
 
   @Test
   public void testReloadCommand_specificTask_statusRequestSent() {
-    testCommand("reload", "1", TaskConfigReloadRequest.create("1"));
+    testCommand("RELOAD", "1", TaskConfigReloadRequest.create("1"));
   }
 
   @Test
   public void testReloadCommand_allTasks_statusRequestSent() {
-    testCommand("reload", "all", TaskConfigReloadRequest.create());
+    testCommand("RELOAD", "all", TaskConfigReloadRequest.create());
   }
 
   @Test
   public void testDropCommand_specificTask_statusRequestSent() {
-    testCommand("drop", "1", TaskDropRequest.create("1"));
+    testCommand("DROP", "1", TaskDropRequest.create("1"));
   }
 
   @Test
   public void testDropCommand_allTasks_statusRequestSent() {
-    testCommand("drop", "all", TaskDropRequest.create());
+    testCommand("DROP", "all", TaskDropRequest.create());
   }
 
   @Test
@@ -177,7 +177,7 @@ public class CliProcessorTest {
     processor.onTaskUpdateStatus(new TaskUpdateResponse.Builder()
         .setTaskName("Task")
         .setResultMessage(taskUpdateStatusMessage)
-        .setCommand(Command.drop)
+        .setCommand(Command.DROP)
         .build());
 
     assertThat(out.toString()).contains(taskUpdateStatusMessage);

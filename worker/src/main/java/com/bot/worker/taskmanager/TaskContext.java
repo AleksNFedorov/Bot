@@ -68,7 +68,7 @@ class TaskContext {
   }
 
   /**
-   * Cancels tasks and sets status to 'Hold'
+   * Cancels tasks and sets STATUS to 'Hold'
    *
    * @see TaskStatus
    * @see com.bot.worker.cli.Command

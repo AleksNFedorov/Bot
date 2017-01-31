@@ -4,7 +4,7 @@ import com.bot.worker.common.Constants;
 import org.inferred.freebuilder.FreeBuilder;
 
 /**
- * Request to schedule task
+ * Request to SCHEDULE task
  */
 @FreeBuilder
 public interface TaskScheduleRequest extends TaskUpdateRequest {

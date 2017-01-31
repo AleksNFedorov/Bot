@@ -33,7 +33,7 @@ public enum TaskStatus {
    */
   Running,
   /**
-   * Task executed, particular execution status in {@link com.bot.common.TaskResult}
+   * Task executed, particular execution STATUS in {@link com.bot.common.TaskResult}
    */
   Finished,
   /**

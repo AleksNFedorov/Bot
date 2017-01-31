@@ -78,7 +78,7 @@ public class CliProcessor extends EventBusComponent {
                             }
                         } catch (Exception e) {
                             logger.error("Exception during processing command ", e);
-                            System.out.println(String.format("%s, use '-help' for " +
+                            System.out.println(String.format("%s, use '-HELP' for " +
                                     "more info", e.getLocalizedMessage()));
                             displayHelpMessage();
                         }
@@ -114,22 +114,22 @@ public class CliProcessor extends EventBusComponent {
                 .getOptionValue(command.name()));
 
         switch (command) {
-            case help:
+            case HELP:
                 displayHelpMessage();
                 return;
-            case status:
+            case STATUS:
                 post(GetStatusRequest.create(taskId));
                 return;
-            case hold:
+            case HOLD:
                 post(TaskHoldRequest.create(taskId));
                 return;
-            case schedule:
+            case SCHEDULE:
                 post(TaskScheduleRequest.create(taskId));
                 return;
-            case reload:
+            case RELOAD:
                 post(TaskConfigReloadRequest.create(taskId));
                 return;
-            case drop:
+            case DROP:
                 post(TaskDropRequest.create(taskId));
                 return;
             default:

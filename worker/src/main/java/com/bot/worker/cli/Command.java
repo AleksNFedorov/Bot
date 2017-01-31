@@ -7,12 +7,12 @@ package com.bot.worker.cli;
  * @author Aleks
  */
 public enum Command {
-  help("Show this help message", "help"),
-  hold("Put task on hold, put 'all' to put on hold all tasks", "hd"),
-  schedule("Schedule task for execution", "s"),
-  status("Show task status, put 'all' to display status for all tasks", "st"),
-  drop("Drop task and remove all results, put 'all' drop all tasks", "dp"),
-  reload("Reload task from config, put 'all' to reload all tasks", "rd");
+  HELP("Show this HELP message", "help"),
+  HOLD("Put task on HOLD, put 'all' to put on HOLD all tasks", "hd"),
+  SCHEDULE("Schedule task for execution", "s"),
+  STATUS("Show task STATUS, put 'all' to display STATUS for all tasks", "st"),
+  DROP("Drop task and remove all results, put 'all' DROP all tasks", "dp"),
+  RELOAD("Reload task from config, put 'all' to RELOAD all tasks", "rd");
 
   private String description;
   private String shortOpt;

@@ -13,23 +13,14 @@ import org.apache.commons.cli.Options;
 class RunOptions extends Options {
 
   RunOptions() {
-    Command command = Command.help;
+    Command command = Command.HELP;
     addOption(Option
         .builder(command.getShortOpt())
         .longOpt(command.name())
         .desc(command.getDescription())
         .build());
 
-    command = Command.hold;
-    addOption(Option
-        .builder(command.getShortOpt())
-        .longOpt(command.name())
-        .desc(command.getDescription())
-        .hasArg()
-        .argName("TASK ID")
-        .build());
-
-    command = Command.schedule;
+    command = Command.HOLD;
     addOption(Option
         .builder(command.getShortOpt())
         .longOpt(command.name())
@@ -38,7 +29,7 @@ class RunOptions extends Options {
         .argName("TASK ID")
         .build());
 
-    command = Command.status;
+    command = Command.SCHEDULE;
     addOption(Option
         .builder(command.getShortOpt())
         .longOpt(command.name())
@@ -47,7 +38,7 @@ class RunOptions extends Options {
         .argName("TASK ID")
         .build());
 
-    command = Command.reload;
+    command = Command.STATUS;
     addOption(Option
         .builder(command.getShortOpt())
         .longOpt(command.name())
@@ -56,7 +47,16 @@ class RunOptions extends Options {
         .argName("TASK ID")
         .build());
 
-    command = Command.drop;
+    command = Command.RELOAD;
+    addOption(Option
+        .builder(command.getShortOpt())
+        .longOpt(command.name())
+        .desc(command.getDescription())
+        .hasArg()
+        .argName("TASK ID")
+        .build());
+
+    command = Command.DROP;
     addOption(Option
         .builder(command.getShortOpt())
         .longOpt(command.name())
