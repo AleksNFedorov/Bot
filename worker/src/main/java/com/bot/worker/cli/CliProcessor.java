@@ -55,16 +55,6 @@ public class CliProcessor extends EventBusComponent {
         this.executor = executor;
     }
 
-    private static void displayHelpMessage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(
-                " ",
-                "Available commands",
-                new RunOptions(),
-                "",
-                false);
-    }
-
     @Subscribe
     void onInit(AppInitEvent init) {
         executor.execute(
@@ -94,8 +84,9 @@ public class CliProcessor extends EventBusComponent {
         CommandLine commandLine = new DefaultParser().parse(new RunOptions(),
                 commandLineString.split("\\s+"));
         boolean unknownCommand = true;
+
         for (Command command : Command.values()) {
-            if (commandLine.hasOption(command.name())) {
+            if (commandLine.hasOption(command.getShortOpt())) {
                 processOption(command, commandLine);
                 unknownCommand = false;
             }
@@ -109,9 +100,9 @@ public class CliProcessor extends EventBusComponent {
 
     private void processOption(Command command, CommandLine commandLine) {
         LOG.info("Processing CLI command [{}]", command.name());
-        System.out.println(command.name());
+        System.out.println(command.getLongOpt());
         String taskId = Strings.nullToEmpty(commandLine
-                .getOptionValue(command.name()));
+                .getOptionValue(command.getShortOpt()));
 
         switch (command) {
             case HELP:
@@ -157,6 +148,16 @@ public class CliProcessor extends EventBusComponent {
     @Subscribe
     void onTaskUpdateStatus(TaskUpdateResponse event) {
         System.out.println(event.getResultMessage());
+    }
+
+    private static void displayHelpMessage() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(
+                " ",
+                "Available commands",
+                new RunOptions(),
+                "",
+                false);
     }
 
 }

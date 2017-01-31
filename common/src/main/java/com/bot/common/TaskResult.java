@@ -1,12 +1,14 @@
 package com.bot.common;
 
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+import net.sf.oval.guard.Guarded;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -15,23 +17,55 @@ import java.util.Optional;
  *
  * @author Aleks
  */
+@Guarded
 public class TaskResult {
 
+    @NotNull
     private final Status status;
     private final String message;
+    @NotNull
+    @NotEmpty
     private final String taskName;
     private final LocalDateTime timestamp;
+
+    /**
+     * Status of task execution
+     */
+    public enum Status {
+        /**
+         * Initial value for newly created task
+         */
+        NO_STATUS_YET,
+        /**
+         * Task executed, result - success.
+         * Should be set by {@link TaskExecutor}
+         */
+        SUCCESS,
+        /**
+         * Task executed, result - fail.
+         * Should be set by {@link TaskExecutor}
+         */
+        FAIL,
+        /**
+         * EXCEPTION during task execution
+         */
+        EXCEPTION,
+        /**
+         * Task failed to be executed within a given deadline.
+         * @see TaskConfig#getDeadline()
+         */
+        DEADLINE_EXCEED
+    }
 
     public TaskResult(String taskName, Status status) {
         this(taskName, status, null);
     }
 
     public TaskResult(String taskName, Status status, String message) {
-        checkArgument(!Strings.isNullOrEmpty(taskName));
-        this.status = Preconditions.checkNotNull(status);
+        this.taskName = taskName;
+        this.status = status;
         this.message = message;
         this.timestamp = LocalDateTime.now();
-        this.taskName = taskName;
     }
 
     /**
@@ -93,34 +127,5 @@ public class TaskResult {
                 .add("message", message)
                 .add("time", timestamp)
                 .toString();
-    }
-
-    /**
-     * Status of task execution
-     */
-    public enum Status {
-        /**
-         * Initial value for newly created task
-         */
-        NO_STATUS_YET,
-        /**
-         * Task executed, result - success.
-         * Should be set by {@link TaskExecutor}
-         */
-        SUCCESS,
-        /**
-         * Task executed, result - fail.
-         * Should be set by {@link TaskExecutor}
-         */
-        FAIL,
-        /**
-         * EXCEPTION during task execution
-         */
-        EXCEPTION,
-        /**
-         * Task failed to be executed within a given deadline.
-         * @see TaskConfig#getDeadline()
-         */
-        DEADLINE_EXCEED
     }
 }

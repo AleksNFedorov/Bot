@@ -236,7 +236,7 @@ public class TaskManager extends EventBusComponent {
     post(new GetStatusResponse.Builder()
         .addAllTasksInfo(getTasksById(request.getTaskName())
             .stream()
-            .map((context) ->
+            .map(context ->
                 new GetStatusResponse.TaskInfo.Builder()
                     .setTaskName(context.getTaskName())
                     .setStatus(context.getStatus())

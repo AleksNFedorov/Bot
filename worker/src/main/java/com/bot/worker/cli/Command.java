@@ -7,19 +7,21 @@ package com.bot.worker.cli;
  * @author Aleks
  */
 public enum Command {
-  HELP("Show this HELP message", "help"),
-  HOLD("Put task on HOLD, put 'all' to put on HOLD all tasks", "hd"),
-  SCHEDULE("Schedule task for execution", "s"),
-  STATUS("Show task STATUS, put 'all' to display STATUS for all tasks", "st"),
-  DROP("Drop task and remove all results, put 'all' DROP all tasks", "dp"),
-  RELOAD("Reload task from config, put 'all' to RELOAD all tasks", "rd");
+  HELP("Show this HELP message", "help", "help"),
+  HOLD("Put task on HOLD, put 'all' to put on HOLD all tasks", "hd", "hold"),
+  SCHEDULE("Schedule task for execution", "s", "schedule"),
+  STATUS("Show task STATUS, put 'all' to display STATUS for all tasks", "st","status"),
+  DROP("Drop task and remove all results, put 'all' DROP all tasks", "dp", "drop"),
+  RELOAD("Reload task from config, put 'all' to RELOAD all tasks", "rd", "reload");
 
   private String description;
   private String shortOpt;
+  private String longOpt;
 
-  Command(String description, String shortOpt) {
+  Command(String description, String shortOpt, String longOpt) {
     this.description = description;
     this.shortOpt = shortOpt;
+    this.longOpt = longOpt;
   }
 
   public String getDescription() {
@@ -28,5 +30,9 @@ public enum Command {
 
   public String getShortOpt() {
     return shortOpt;
+  }
+
+  public String getLongOpt() {
+    return longOpt;
   }
 }

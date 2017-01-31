@@ -16,14 +16,14 @@ class RunOptions extends Options {
     Command command = Command.HELP;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .build());
 
     command = Command.HOLD;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .hasArg()
         .argName("TASK ID")
@@ -32,7 +32,7 @@ class RunOptions extends Options {
     command = Command.SCHEDULE;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .hasArg()
         .argName("TASK ID")
@@ -41,7 +41,7 @@ class RunOptions extends Options {
     command = Command.STATUS;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .hasArg()
         .argName("TASK ID")
@@ -50,7 +50,7 @@ class RunOptions extends Options {
     command = Command.RELOAD;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .hasArg()
         .argName("TASK ID")
@@ -59,7 +59,7 @@ class RunOptions extends Options {
     command = Command.DROP;
     addOption(Option
         .builder(command.getShortOpt())
-        .longOpt(command.name())
+        .longOpt(command.getLongOpt())
         .desc(command.getDescription())
         .hasArg()
         .argName("TASK ID")
