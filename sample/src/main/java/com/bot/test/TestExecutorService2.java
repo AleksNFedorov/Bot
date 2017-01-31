@@ -21,7 +21,8 @@ public class TestExecutorService2 implements TaskExecutor {
 
   public TaskResult executeTask(TaskConfig config) {
     logger.info("Executing task in " + getId());
+    
     return new TaskResult(config.getTaskName(), TaskResult.Status.Success, "Test execution " +
-        "success");
+        "success"); // Artem - an obsolete concatenation detected
   }
 }
