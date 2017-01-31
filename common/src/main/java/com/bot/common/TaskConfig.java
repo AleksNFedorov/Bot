@@ -1,7 +1,8 @@
 package com.bot.common;
 
 import java.util.Map;
-
+// Artem
+// common as a name for package is to abstract - try to be more precise!
 
 //Aleks
 //
