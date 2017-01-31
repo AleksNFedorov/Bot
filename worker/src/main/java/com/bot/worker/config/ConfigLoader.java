@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class ConfigLoader extends EventBusComponent {
-
+// Artem - if logger is static and final then consider to use LOG as var name instead of lowercase logger
     private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
     private final String pathToConfigFile;
