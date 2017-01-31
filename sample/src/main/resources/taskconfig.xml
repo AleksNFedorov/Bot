@@ -1,3 +1,4 @@
+<!-- ARTEM - I would refrain from using xml configuraiton approach except cases when I need config validation (xsd). In other cases I suggest using yml format! -->
 <config>
     <!-- Task group config -->
     <group id="GitHub.com">
