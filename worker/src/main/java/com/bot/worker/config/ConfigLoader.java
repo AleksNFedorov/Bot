@@ -113,6 +113,7 @@ public class ConfigLoader extends EventBusComponent {
         config.getGroups()
                 .forEach(group -> group.getTasks()
                         .stream()
+                         // obsolete braces around lambda args 'c' and 'task', for example line 127 does not contain any braces around 'c'
                         .filter((c) -> isValidTaskConfig(taskName, c))
                         .forEach((task) -> {
                                     processTaskConfig(group.getGroupName(), task);
