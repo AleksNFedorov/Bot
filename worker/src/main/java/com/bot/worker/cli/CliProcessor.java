@@ -109,7 +109,7 @@ public class CliProcessor extends EventBusComponent {
 
     private void processOption(Command command, CommandLine commandLine) {
         logger.info("Processing CLI command [{}]", command.name());
-        System.out.println(command.name());
+        System.out.println(command.name()); // Artem - configure console appender in logback.xml instead!
         String taskId = Strings.nullToEmpty(commandLine
                 .getOptionValue(command.name()));
 
