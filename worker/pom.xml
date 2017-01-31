@@ -12,7 +12,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
+<!-- Consider creation of parent pom and using <dependencyManagement>. Having parent pom will allow you to declare of version variables in one place.-->
     <dependencies>
         <dependency>
             <groupId>com.bot</groupId>
