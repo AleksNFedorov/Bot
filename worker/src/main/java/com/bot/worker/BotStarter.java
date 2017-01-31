@@ -31,6 +31,7 @@ public class BotStarter {
       bus.post(AppInitEvent.create());
 
     } catch (Throwable th) {
+      // do not catch throwable (it would catch Error which does not make sense)
       logger.error("Application running exception ", th);
     }
   }
