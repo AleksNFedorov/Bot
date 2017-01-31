@@ -115,7 +115,7 @@ public class TaskManagerTest {
 
     CountDownLatch latch = new CountDownLatch(2);
     latchReference.set(latch);
-    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.Success,
+    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.SUCCESS,
         1, 2L);
     TaskResult expectedResult = createTaskResult(config);
 
@@ -139,7 +139,7 @@ public class TaskManagerTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     latchReference.set(latch);
-    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.Success,
+    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.SUCCESS,
         1, -1L);
     TaskResult expectedResult = createTaskResult(config);
 
@@ -165,9 +165,9 @@ public class TaskManagerTest {
 
     CountDownLatch latch = new CountDownLatch(2);
     latchReference.set(latch);
-    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.Success,
+    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.SUCCESS,
         1, -1L);
-    TestTaskConfig config2 = new TestTaskConfig(TaskResult.Status.Success,
+    TestTaskConfig config2 = new TestTaskConfig(TaskResult.Status.SUCCESS,
         1, -1L);
 
     TaskResult expectedGroupResult = createTaskResult(config2);
@@ -202,7 +202,7 @@ public class TaskManagerTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     latchReference.set(latch);
-    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.Success,
+    TestTaskConfig config = new TestTaskConfig(TaskResult.Status.SUCCESS,
         100, -1L);
 
     taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
@@ -214,7 +214,7 @@ public class TaskManagerTest {
 
     assertThat(eventBusPostCaptor.getAllValues()).isEmpty();
     assertThat(resultProcessorCaptor.getValue().getStatus()).isEqualTo
-        (TaskResult.Status.DeadlineExceed);
+        (TaskResult.Status.DEADLINE_EXCEED);
   }
 
   @Test
@@ -236,7 +236,7 @@ public class TaskManagerTest {
     assertThat(eventBusPostCaptor.getAllValues()).hasSize(0);
 
     assertThat(resultProcessorCaptor.getValue().getStatus()).isEqualTo
-        (TaskResult.Status.Exception);
+        (TaskResult.Status.EXCEPTION);
     assertThat(resultProcessorCaptor.getValue().getMessage().get())
         .isEqualTo("Expected");
   }
@@ -248,11 +248,11 @@ public class TaskManagerTest {
     CountDownLatch latch = new CountDownLatch(2);
     latchReference.set(latch);
     TestTaskConfig config = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L);
 
     TestTaskConfig config2 = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L);
 
     taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
@@ -272,7 +272,7 @@ public class TaskManagerTest {
 
     TaskResult result = resultProcessorCaptor.getAllValues().get(0);
     GetStatusResponse expectedResponse = new GetStatusResponse.Builder()
-        .addTasksInfo(buildTaskInfo(TaskStatus.Finished, result))
+        .addTasksInfo(buildTaskInfo(TaskStatus.FINISHED, result))
         .build();
 
     assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
@@ -286,11 +286,11 @@ public class TaskManagerTest {
     CountDownLatch latch = new CountDownLatch(2);
     latchReference.set(latch);
     TestTaskConfig config = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L);
 
     TestTaskConfig config2 = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L);
 
     taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
@@ -310,8 +310,8 @@ public class TaskManagerTest {
     TaskResult firstResult = resultProcessorCaptor.getAllValues().get(0);
     TaskResult secondResult = resultProcessorCaptor.getAllValues().get(1);
     GetStatusResponse expectedResponse = new GetStatusResponse.Builder()
-        .addTasksInfo(buildTaskInfo(TaskStatus.Finished, firstResult))
-        .addTasksInfo(buildTaskInfo(TaskStatus.Finished, secondResult))
+        .addTasksInfo(buildTaskInfo(TaskStatus.FINISHED, firstResult))
+        .addTasksInfo(buildTaskInfo(TaskStatus.FINISHED, secondResult))
         .build();
 
     assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
@@ -327,7 +327,7 @@ public class TaskManagerTest {
     latchReference.set(resultProcessedLatch);
 
     TestTaskConfig config = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         10, -1L, 1000);
     config.setBlockRun(true);
 
@@ -351,9 +351,9 @@ public class TaskManagerTest {
     assertThat(response.getTasksInfo()).hasSize(1);
 
     assertThat(taskInfo.getTaskName()).isEqualTo(config.getTaskName());
-    assertThat(taskInfo.getStatus()).isEqualTo(TaskStatus.Hold);
+    assertThat(taskInfo.getStatus()).isEqualTo(TaskStatus.HOLD);
     assertThat(taskInfo.getResultStatus()).isEqualTo(TaskResult.Status
-        .NoStatusYet);
+        .NO_STATUS_YET);
   }
 
   @Test
@@ -364,7 +364,7 @@ public class TaskManagerTest {
     latchReference.set(resultProcessedLatch);
 
     TestTaskConfig config = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L, Integer.MAX_VALUE);
 
     taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
@@ -380,9 +380,9 @@ public class TaskManagerTest {
     assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
     assertThat(response.getTasksInfo()).hasSize(1);
     assertThat(response.getTasksInfo().get(0).getTaskName()).isEqualTo(config.getTaskName());
-    assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.Finished);
+    assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.FINISHED);
     assertThat(response.getTasksInfo().get(0).getResultStatus())
-        .isEqualTo(TaskResult.Status.Success);
+        .isEqualTo(TaskResult.Status.SUCCESS);
   }
 
   @Test
@@ -393,7 +393,7 @@ public class TaskManagerTest {
     latchReference.set(resultProcessedLatch);
 
     TestTaskConfig config = new TestTaskConfig(
-        TaskResult.Status.Success,
+        TaskResult.Status.SUCCESS,
         1, -1L);
 
     taskManager.onNewTaskConfig(new TaskConfigLoadedResponse.Builder()
@@ -414,9 +414,9 @@ public class TaskManagerTest {
     assertThat(eventBusPostCaptor.getAllValues()).hasSize(1);
     assertThat(response.getTasksInfo()).hasSize(1);
     assertThat(response.getTasksInfo().get(0).getTaskName()).isEqualTo(config.getTaskName());
-    assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.Finished);
+    assertThat(response.getTasksInfo().get(0).getStatus()).isEqualTo(TaskStatus.FINISHED);
     assertThat(response.getTasksInfo().get(0).getResultStatus())
-        .isEqualTo(TaskResult.Status.Success);
+        .isEqualTo(TaskResult.Status.SUCCESS);
   }
 
   private static class TestTaskConfig extends TaskConfig implements Runnable {
@@ -501,7 +501,7 @@ public class TaskManagerTest {
   private static class ExceptionTestTaskConfig extends TestTaskConfig implements Runnable {
 
     ExceptionTestTaskConfig() {
-      super(TaskResult.Status.Success, 1, 1, 4L);
+      super(TaskResult.Status.SUCCESS, 1, 1, 4L);
     }
 
     @Override

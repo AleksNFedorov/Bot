@@ -22,7 +22,7 @@ public class TestExecutorService2 implements TaskExecutor {
 
   public TaskResult executeTask(TaskConfig config) {
     LOG.info("Executing task in " + getId());
-    return new TaskResult(config.getTaskName(), TaskResult.Status.Success,
+    return new TaskResult(config.getTaskName(), TaskResult.Status.SUCCESS,
             "Test execution success");
   }
 }

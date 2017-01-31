@@ -30,13 +30,13 @@ class TaskContext {
 
   private TaskResult lastTaskResult;
 
-  private TaskStatus status = TaskStatus.Scheduled;
+  private TaskStatus status = TaskStatus.SCHEDULED;
 
   TaskContext(TaskConfig config, String groupName) {
     this.config = config;
     this.groupName = groupName;
     setLastTaskResult(new TaskResult(config.getTaskName(), TaskResult
-        .Status.NoStatusYet));
+        .Status.NO_STATUS_YET));
   }
 
   String getGroupName() {
@@ -68,14 +68,14 @@ class TaskContext {
   }
 
   /**
-   * Cancels tasks and sets STATUS to 'Hold'
+   * Cancels tasks and sets STATUS to 'HOLD'
    *
    * @see TaskStatus
    * @see com.bot.worker.cli.Command
    */
   void putOnHold() {
     future.cancel(true);
-    setStatus(TaskStatus.Hold);
+    setStatus(TaskStatus.HOLD);
   }
 
   public TaskConfig getConfig() {

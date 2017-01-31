@@ -3,17 +3,17 @@ package com.bot.worker.common;
 /**
  * Flow for scheduling task:
  * <ul>
- *     <li>1. Scheduled</li>
- *     <li>2. Running/Hold</li>
- *     <li>3. Scheduled</li>
+ *     <li>1. SCHEDULED</li>
+ *     <li>2. RUNNING/HOLD</li>
+ *     <li>3. SCHEDULED</li>
  * </ul>
  *
  * <p>
  * Flow for 'one time task' task
  * <ul>
- *     <li>1. Scheduled</li>
- *     <li>2. Running/Hold</li>
- *     <li>3. Finished</li>
+ *     <li>1. SCHEDULED</li>
+ *     <li>2. RUNNING/HOLD</li>
+ *     <li>3. FINISHED</li>
  * </ul>
  *
  * @author Aleks
@@ -23,21 +23,21 @@ public enum TaskStatus {
   /**
    * When task is scheduled but not being executed yet
    */
-  Scheduled,
+  SCHEDULED,
   /**
    * Task put on hold
    */
-  Hold,
+  HOLD,
   /**
    * Task is being executed by corresponding executor
    */
-  Running,
+  RUNNING,
   /**
    * Task executed, particular execution STATUS in {@link com.bot.common.TaskResult}
    */
-  Finished,
+  FINISHED,
   /**
    * Reserved for exceptional case
    */
-  Unknown,
+  UNKNOWN,
 }

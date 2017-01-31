@@ -55,7 +55,7 @@ class BotModule extends AbstractModule {
       public void handleException(final Throwable exception,
           final SubscriberExceptionContext context) {
 
-        LOG.error("Exception", exception);
+        LOG.error("EXCEPTION", exception);
       }
     });
   }

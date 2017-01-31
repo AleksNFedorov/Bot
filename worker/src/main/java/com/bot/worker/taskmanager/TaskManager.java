@@ -120,11 +120,11 @@ public class TaskManager extends EventBusComponent {
     long deadline = taskConfig.getDeadline();
 
     return () -> {
-      LOG.info("Running {}", taskConfig.getTaskName());
+      LOG.info("RUNNING {}", taskConfig.getTaskName());
       TimeLimiter limiter = new SimpleTimeLimiter(taskExecutor);
       TaskResult result;
       try {
-        taskContext.setStatus(TaskStatus.Running);
+        taskContext.setStatus(TaskStatus.RUNNING);
         result = limiter.callWithTimeout(
             () -> executor.executeTask(taskConfig),
             deadline,
@@ -132,7 +132,7 @@ public class TaskManager extends EventBusComponent {
             true);
       } catch (Exception e) {
         TaskResult.Status status = e instanceof UncheckedTimeoutException ?
-            TaskResult.Status.DeadlineExceed : TaskResult.Status.Exception;
+            TaskResult.Status.DEADLINE_EXCEED : TaskResult.Status.EXCEPTION;
 
         result = new TaskResult(
             taskConfig.getTaskName(),
@@ -193,7 +193,7 @@ public class TaskManager extends EventBusComponent {
   }
 
   /**
-   * Tries to re-SCHEDULE task. Task should have either Hold of Finished STATUS
+   * Tries to re-SCHEDULE task. Task should have either HOLD of FINISHED STATUS
    *
    * @param event {@link TaskScheduleRequest}
    */
@@ -202,15 +202,15 @@ public class TaskManager extends EventBusComponent {
     getTasksById(event.getTaskName())
         .stream()
         .filter(k ->
-            k.getStatus().equals(TaskStatus.Hold) ||
-                k.getStatus().equals(TaskStatus.Finished))
+            k.getStatus().equals(TaskStatus.HOLD) ||
+                k.getStatus().equals(TaskStatus.FINISHED))
         .forEach(this::scheduleTask);
 
     onGetStatusRequest(GetStatusRequest.create(event.getTaskName()));
   }
 
   /**
-   * Puts task on HOLD, {@link TaskStatus} should be either Running or Scheduled
+   * Puts task on HOLD, {@link TaskStatus} should be either RUNNING or SCHEDULED
    *
    * @param event {@link TaskHoldRequest}
    */
@@ -219,8 +219,8 @@ public class TaskManager extends EventBusComponent {
     getTasksById(event.getTaskName())
         .stream()
         .filter(k ->
-            (k.getStatus().equals(TaskStatus.Running) ||
-                k.getStatus().equals(TaskStatus.Scheduled)))
+            (k.getStatus().equals(TaskStatus.RUNNING) ||
+                k.getStatus().equals(TaskStatus.SCHEDULED)))
         .forEach(TaskContext::putOnHold);
 
     onGetStatusRequest(GetStatusRequest.create(event.getTaskName()));
@@ -264,14 +264,14 @@ public class TaskManager extends EventBusComponent {
   }
 
   private static TaskStatus getNewTaskStatus(TaskContext context) {
-    TaskStatus newStatus = TaskStatus.Unknown;
+    TaskStatus newStatus = TaskStatus.UNKNOWN;
     switch (context.getStatus()) {
-      case Running:
+      case RUNNING:
         newStatus = context.getConfig().isOneTimeTask() ?
-                TaskStatus.Finished : TaskStatus.Scheduled;
+                TaskStatus.FINISHED : TaskStatus.SCHEDULED;
         break;
-      case Hold:
-        newStatus = TaskStatus.Hold;
+      case HOLD:
+        newStatus = TaskStatus.HOLD;
         break;
     }
     return newStatus;

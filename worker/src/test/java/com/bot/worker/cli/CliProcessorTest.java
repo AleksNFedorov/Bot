@@ -157,15 +157,15 @@ public class CliProcessorTest {
         .addTasksInfo(
             new GetStatusResponse.TaskInfo.Builder()
                 .setResultTimestamp(localTime)
-                .setResultStatus(TaskResult.Status.Success)
+                .setResultStatus(TaskResult.Status.SUCCESS)
                 .setTaskName("taskId")
-                .setStatus(TaskStatus.Finished)
+                .setStatus(TaskStatus.FINISHED)
                 .build())
         .build());
 
     assertThat(out.toString()).contains("taskId");
-    assertThat(out.toString()).contains("Finished");
-    assertThat(out.toString()).contains("Success");
+    assertThat(out.toString()).contains("FINISHED");
+    assertThat(out.toString()).contains("SUCCESS");
   }
 
   @Test

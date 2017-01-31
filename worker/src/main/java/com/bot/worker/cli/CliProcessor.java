@@ -77,7 +77,7 @@ public class CliProcessor extends EventBusComponent {
                                 processCommand(command);
                             }
                         } catch (Exception e) {
-                            LOG.error("Exception during processing command ", e);
+                            LOG.error("EXCEPTION during processing command ", e);
                             System.out.println(String.format("%s, use '-HELP' for " +
                                     "more info", e.getLocalizedMessage()));
                             displayHelpMessage();
@@ -133,7 +133,7 @@ public class CliProcessor extends EventBusComponent {
                 post(TaskDropRequest.create(taskId));
                 return;
             default:
-                System.out.println(String.format("Unknown command: [%s]",
+                System.out.println(String.format("UNKNOWN command: [%s]",
                         command.name()));
         }
     }

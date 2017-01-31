@@ -102,25 +102,25 @@ public class TaskResult {
         /**
          * Initial value for newly created task
          */
-        NoStatusYet,
+        NO_STATUS_YET,
         /**
          * Task executed, result - success.
          * Should be set by {@link TaskExecutor}
          */
-        Success,
+        SUCCESS,
         /**
          * Task executed, result - fail.
          * Should be set by {@link TaskExecutor}
          */
-        Fail,
+        FAIL,
         /**
-         * Exception during task execution
+         * EXCEPTION during task execution
          */
-        Exception,
+        EXCEPTION,
         /**
          * Task failed to be executed within a given deadline.
          * @see TaskConfig#getDeadline()
          */
-        DeadlineExceed
+        DEADLINE_EXCEED
     }
 }
