@@ -7,6 +7,7 @@ package com.bot.worker.cli;
  * @author Aleks
  */
 public enum Command {
+  // use upper case for enumerated constants 
   help("Show this help message", "help"),
   hold("Put task on hold, put 'all' to put on hold all tasks", "hd"),
   schedule("Schedule task for execution", "s"),
