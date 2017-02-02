@@ -8,7 +8,7 @@ import java.util.List;
  *
  * <p>
  *  Call to {@link #processResult(TaskResult, List)} should be non-blocking to avoid application performance degradation.
- *  In case of network/long-running calls consider to use {@link Thread}
+ *  In case of network/long-running calls consider using {@link Thread}
  */
 public interface TaskResultProcessor {
 

@@ -1,21 +1,15 @@
 package com.bot.common;
 
 import java.util.Map;
-// Artem
-// common as a name for package is to abstract - try to be more precise!
-
-//Aleks
-//
-//This is a test comment
 
 /**
  * Task config. Contains key parameters to schedule and execute task
  *
  * <p>
- * <b>Important!</b> {@link #getDeadline()} must be strongly less than {@link #getRunInterval()}
+ * <b>Important!</b> {@link #getDeadline()} must be much less than {@link #getRunInterval()}
  *
  * <p>
- * To make task as on time run task schedule interval must be equal to {@link #ONE_TIME_TASK}
+ * To make task as runs only once schedule interval must be equal to {@link #ONE_TIME_TASK}
  *
  * <p>
  * Use {@link #config} to specify executor specific parameters
@@ -50,7 +44,7 @@ public class TaskConfig {
   }
 
   /**
-   * Executor id to call for execute task
+   * Executor ID to call for task execution
    *
    * @see TaskExecutor#executeTask(TaskConfig)
    * @return executor id
@@ -68,7 +62,7 @@ public class TaskConfig {
   }
 
   /**
-   * Task run deadline, should be strongly less then {@link #getRunInterval()}
+   * Task running deadline, should be much less then {@link #getRunInterval()}
    * @return deadline interval in seconds
    */
   public long getDeadline() {
@@ -76,9 +70,9 @@ public class TaskConfig {
   }
 
   /**
-   * Method to check that current task is a one time task, should be run only once.
+   * Method to check that current task is a one-time task, should be run only once.
    * Possible to run multiple times with explicit call via CLI
-   * @return true if this is one time task
+   * @return true if this is a one-time task
    */
   public boolean isOneTimeTask() {
     return runInterval == ONE_TIME_TASK;

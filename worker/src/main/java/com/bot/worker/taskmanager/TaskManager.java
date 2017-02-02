@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Master class to manage and execute tasks.
+ * Master class for managing and executing tasks.
  * For more info see methods annotated with {@code @Subscribe}
  *
  * <p>
@@ -46,11 +46,11 @@ import org.slf4j.LoggerFactory;
  *      <li>Execute task with particular executor</li>
  *      <li>Drop task</li>
  *      <li>Put task on HOLD</li>
- *      <li>Provide task(s) details</li>
+ *      <li>Provide details of task(s)</li>
  *  </ul>
  *
  * <p>
- *  All communication with other app components goes though event bus,
+ *  All communication with other app components goes through the event bus,
  *  look {@link EventBusComponent} for more info
  *
  *  @see com.bot.worker.cli.Command

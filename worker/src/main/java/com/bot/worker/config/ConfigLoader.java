@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * }
  *
  * <p>
- *  All communication with other app components goes though event bus,
+ *  All communication with other app components goes through the event bus,
  *  look {@link EventBusComponent} for more info
  *
  * @author Aleks
@@ -68,12 +68,6 @@ public class ConfigLoader extends EventBusComponent {
     @Inject
     ConfigLoader(@TaskConfigFile String pathToConfigFile) {
         this.pathToConfigFile = pathToConfigFile;
-    }
-
-    private static boolean isValidTaskConfig(String taskName, XmlTaskConfig
-            config) {
-        return Constants.ALL.equals(taskName) || taskName.equals(config
-                .getTaskName());
     }
 
     /**
@@ -139,6 +133,12 @@ public class ConfigLoader extends EventBusComponent {
                 new BufferedInputStream(new FileInputStream(pathToConfigFile))) {
             return JAXB.unmarshal(configStream, XmlConfig.class);
         }
+    }
+
+    private static boolean isValidTaskConfig(String taskName, XmlTaskConfig
+            config) {
+        return Constants.ALL.equals(taskName) || taskName.equals(config
+                .getTaskName());
     }
 
 }

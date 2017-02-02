@@ -1,12 +1,12 @@
 package com.bot.common;
 
 /**
- * Interface for task executors implementations.
+ * Interface for implementations of task executors.
  * <p>
- * Every instance must be stateless to be ready accept concurrent execution calls.
+ * Every instance must be stateless to be ready to accept concurrent execution calls.
  *
  * <p>
- * <b>Important!</b>It is implementation responsibility to execute task within a given deadline or throw exception.
+ * <b>Important!</b>It is implementation's responsibility to execute task within a given deadline or throw an exception.
  *
  * <p>
  * <b>Important</b> {@link #executeTask(TaskConfig)} method should be responsive on Thread interruption calls
@@ -16,7 +16,7 @@ public interface TaskExecutor {
 
   /**
    * Executor unique identifier.
-   * Must be unique among all executors inside one running Bot app
+   * Must be unique among all executors in one running Bot app
    *
    * @return string executor id;
    */

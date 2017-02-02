@@ -21,7 +21,7 @@ package com.bot.worker.common;
 //TODO rename to state
 public enum TaskStatus {
   /**
-   * When task is scheduled but not being executed yet
+   * When task is scheduled but not yet executed
    */
   SCHEDULED,
   /**

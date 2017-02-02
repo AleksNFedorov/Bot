@@ -25,12 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Processes commands coming from console, intended to use for app/task management.
- * Check {@link Command} for full list of available commands
+ * Processes commands coming from console, intended for use for app/task management.
+ * Check {@link Command} for a full list of available commands
  *
  * <p>
- *  All communication with other app components goes though event bus,
- *  look {@link EventBusComponent} for more info
+ *  All communication with other app components goes through the event bus.
+ *  Look {@link EventBusComponent} for more info
  *
  * <p>
  * <b>Important</b> do not write logs into console, it will be considered as user input

@@ -6,7 +6,7 @@ import net.sf.oval.constraint.NotNull;
 import net.sf.oval.guard.Guarded;
 
 /**
- * Ancestor class for linking particular component with EventBus and provide helper methods to post events
+ * Ancestor class for linking particular component with EventBus, provides helper methods to post events
  *
  * @author Aleks
  */
