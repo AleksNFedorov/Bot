@@ -1,16 +1,16 @@
 # Bot
 
-Bot is a small application to help keep an eye over network resources using variety predefined checks and same time be extensible for custom needs. 
+Bot is a small application that helps to keep an eye on network resources using a variety of predefined checks and to be extensible for custom needs. 
 
-In a broad context app might be used as a scheduler for any kind of tasks
+In a broad context the app might be used as a scheduler for any kind of task.
 
 ## Project goals
-1. Provide easy way to check network resource availability with different checks
+1. Provide an easy way to check network resource availability with different checks
   * Ping
   * Http
   * Trace
 2. Make it runnable on major OS: Windows, Mac OS, *nix
-3. Easy customizable and manageable
+3. Easily customizable and manageable
 
 ### Use case
 
@@ -92,7 +92,7 @@ mvn install
 
 #### Build custom modules `if any` (Step 3)
 
-Build modules with custom checks and reports, look into [sample](https://github.com/AleksNFedorov/Bot/tree/master/sample) project for more info
+Build modules with custom checks and reports, look into the [sample](https://github.com/AleksNFedorov/Bot/tree/master/sample) project for more info
 
 1. To add custom check
  * Implement [TaskExecutor](https://github.com/AleksNFedorov/Bot/blob/master/common/src/main/java/com/bot/common/TaskExecutor.java)
@@ -122,7 +122,7 @@ java -cp "common.jar:worker.jar:checks.jar:custom.jar" com.bot.worker.BotStarter
 ### Important
 
 ``` cmd
-By default logs are written to app home folder under ‘log’. 
+By default logs are written into the app home folder under ‘log’. 
 Console is used for command line interface. Type --help to get command list.
 ```
 
@@ -137,7 +137,7 @@ Console is used for command line interface. Type --help to get command list.
 
 ## Beta notice
 
-Bot is still under development. Core functionality already implemented and not significant code change expecting, however some minor changes are likely. Stay tuned.
+Bot is still in development. Core functionality has been implemented and significant code change are not expect, however some minor changes are likely. Stay tuned.
 
 ## License
 
