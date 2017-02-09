@@ -1,8 +1,5 @@
 package com.bot.worker.cli;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.doNothing;
-
 import com.bot.common.TaskResult;
 import com.bot.worker.common.TaskStatus;
 import com.bot.worker.common.events.AppInitEvent;
@@ -15,12 +12,6 @@ import com.bot.worker.common.events.TaskScheduleRequest;
 import com.bot.worker.common.events.TaskUpdateResponse;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,6 +21,16 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * JUnit test for {@link CliProcessor}
@@ -85,59 +86,59 @@ public class CliProcessorTest {
   @Test
   public void testHelpCommand_helpPrinted() {
 
-    sendCommand("HELP", "");
+    sendCommand("help", "");
 
-    assertThat(out.toString()).startsWith("HELP");
+    assertThat(out.toString()).startsWith("help");
   }
 
   @Test
   public void testStatusCommand_specificTask_statusRequestSent() {
-    testCommand("STATUS", "1", GetStatusRequest.create("1"));
+    testCommand("status", "1", GetStatusRequest.create("1"));
   }
 
   @Test
   public void testStatusCommand_allTasks_statusRequestSent() {
-    testCommand("STATUS", "all", GetStatusRequest.create());
+    testCommand("status", "all", GetStatusRequest.create());
   }
 
   @Test
   public void testHoldCommand_specificTask_statusRequestSent() {
-    testCommand("HOLD", "1", TaskHoldRequest.create("1"));
+    testCommand("hold", "1", TaskHoldRequest.create("1"));
   }
 
   @Test
   public void testHoldCommand_allTasks_statusRequestSent() {
-    testCommand("HOLD", "all", TaskHoldRequest.create());
+    testCommand("hold", "all", TaskHoldRequest.create());
   }
 
   @Test
   public void testScheduleCommand_specificTask_statusRequestSent() {
-    testCommand("SCHEDULE", "1", TaskScheduleRequest.create("1"));
+    testCommand("schedule", "1", TaskScheduleRequest.create("1"));
   }
 
   @Test
   public void testScheduleCommand_allTasks_statusRequestSent() {
-    testCommand("SCHEDULE", "all", TaskScheduleRequest.create());
+    testCommand("schedule", "all", TaskScheduleRequest.create());
   }
 
   @Test
   public void testReloadCommand_specificTask_statusRequestSent() {
-    testCommand("RELOAD", "1", TaskConfigReloadRequest.create("1"));
+    testCommand("reload", "1", TaskConfigReloadRequest.create("1"));
   }
 
   @Test
   public void testReloadCommand_allTasks_statusRequestSent() {
-    testCommand("RELOAD", "all", TaskConfigReloadRequest.create());
+    testCommand("reload", "all", TaskConfigReloadRequest.create());
   }
 
   @Test
   public void testDropCommand_specificTask_statusRequestSent() {
-    testCommand("DROP", "1", TaskDropRequest.create("1"));
+    testCommand("drop", "1", TaskDropRequest.create("1"));
   }
 
   @Test
   public void testDropCommand_allTasks_statusRequestSent() {
-    testCommand("DROP", "all", TaskDropRequest.create());
+    testCommand("drop", "all", TaskDropRequest.create());
   }
 
   @Test
